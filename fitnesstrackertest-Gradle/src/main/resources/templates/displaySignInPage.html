@@ -1,181 +1,203 @@
 <html xmlns:th="https://www.thymeleaf.org/">
 
 <head>
-	 <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <script src="https://kit.fontawesome.com/e6088e1730.js" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>Log In Page</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<script src="https://kit.fontawesome.com/e6088e1730.js" crossorigin="anonymous"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<title>Log In Page</title>
+	<script>
+		setTimeout(function(){
+			var messageBox=document.getElementById("message-box");
+			messageBox.innerText="";
+			
+		},3000);
+		
+	</script>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
 
-            box-sizing: border-box;
-            font-family: 'Oswald', sans-serif;
-        }
+			box-sizing: border-box;
+			font-family: 'Oswald', sans-serif;
+		}
 
-        #container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(Images/e8.jpg);
-            background-position: center;
-            background-size: cover;
+		#container {
+			position: relative;
+			width: 100%;
+			height: 100vh;
+			background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(Images/e8.jpg);
+			background-position: center;
+			background-size: cover;
 
-        }
+		}
 
-        #form-box {
-            position: absolute;
-            width: 90%;
-            max-width: 450px;
+		#form-box {
+			position: absolute;
+			width: 90%;
+			max-width: 450px;
 
-            top: 50%;
-            left: 50%;
-            background-color: #fff;
-            padding: 50px 60px 70px;
-            text-align: center;
-            transform: translate(-50%, -50%);
-        }
+			top: 50%;
+			left: 50%;
+			background-color: #fff;
+			padding: 50px 60px 70px;
+			text-align: center;
+			transform: translate(-50%, -50%);
+		}
 
-        #form-box h1 {
-            font-size: 30px;
-            color: #fe7250;
-            font-weight: 700;
-            margin-bottom: 2px;
-            margin-top: -10px;
+		#form-box h1 {
+			font-size: 30px;
+			color: #fe7250;
+			font-weight: 700;
+			margin-bottom: 2px;
+			margin-top: -10px;
 
-        }
+		}
 
-        #underline-box {
-            height: 2px;
-            display: block;
-            width: 48px;
-            margin: 2px auto 20px;
-            padding: 0;
-            border: 2px solid #fe7250;
+		#underline-box {
+			height: 2px;
+			display: block;
+			width: 48px;
+			margin: 2px auto 20px;
+			padding: 0;
+			border: 2px solid #fe7250;
 
-        }
+		}
 
-        #input-field {
-            /*have colored the whole div light grey*/
-            background: #eaeaea;
-            margin: 15px 0;
-            border-radius: 3px;
-            display: flex;
-            align-items: center;
-            max-height: 65px;
-            overflow: hidden;
-            transition: all 0.8s;
+		#input-field {
+			/*have colored the whole div light grey*/
+			background: #eaeaea;
+			margin: 15px 0;
+			border-radius: 3px;
+			display: flex;
+			align-items: center;
+			max-height: 65px;
+			overflow: hidden;
+			transition: all 0.8s;
 
 
-        }
+		}
 
-        input {
-            width: 100%;
-            /* can aslo give same color as input-field*/
-            background: transparent;
-            border: 0;
-            outline: 0;
-            padding: 18px 15px;
-        }
+		input {
+			width: 100%;
+			/* can aslo give same color as input-field*/
+			background: transparent;
+			border: 0;
+			outline: 0;
+			padding: 18px 15px;
+		}
 
-        #input-field i {
-            margin-left: 15px;
-            color: #999;
-        }
+		#input-field i {
+			margin-left: 15px;
+			color: #999;
+		}
 
-        form p {
-            text-align: left;
-            font-size: 13px;
-        }
+		form p {
+			text-align: left;
+			font-size: 13px;
+		}
 
-        form a {
-            text-decoration: none;
-            color: #3c00a0;
+		form a {
+			text-decoration: none;
+			color: #3c00a0;
 
-        }
+		}
 
-        form a:hover {
-            color: Red;
-        }
+		form a:hover {
+			color: Red;
+		}
 
-        #signInButton {
-            background: #fe7250;
-            color: #fff;
-            height: 45px;
-            width: 130px;
-            border-radius: 20px;
-            font-size: 15px;
-            padding: 2px 6px;
-            border: 0;
-            outline: 0;
-            cursor: pointer;
-            margin-top: 40px;
-            transition: all ease-in-out 1s;
-        }
+		#forgetPassword {
+			margin-top: -2px;
+		}
 
-        #signInButton :hover {
+		#buttonGrp {
+			margin-top: 0px;
+		}
 
-            background: rgba(254, 114, 80, 0.2);
-        }
+		#message-box {
+			margin-top: 19px;
+			color:orangered;
+			font-size:14px;
+		}
 
-        #message-box {}
+		#signInButton {
+			background: #fe7250;
+			color: #fff;
+			height: 45px;
+			width: 130px;
+			border-radius: 20px;
+			font-size: 15px;
+			padding: 2px 6px;
+			border: 0;
+			outline: 0;
+			cursor: pointer;
+			margin-top: 40px;
+			transition: all ease-in-out 1s;
+		}
 
-        #SignUpLink {
-            margin: 8px auto;
-        }
+		#signInButton :hover {
 
-        #SignUpLink p {
-            font-weight: normal;
-            font-size: 14px;
+			background: rgba(254, 114, 80, 0.2);
+		}
 
-        }
+	
 
-        #SignUpLink a {
-            text-decoration: none;
-        }
+		#SignUpLink {
+			margin: 8px auto;
+		}
 
-        #SignUpLink a:hover {
-            color: #fe7250;
+		#SignUpLink p {
+			font-weight: normal;
+			font-size: 14px;
 
-        }
-    </style>
+		}
+
+		#SignUpLink a {
+			text-decoration: none;
+		}
+
+		#SignUpLink a:hover {
+			color: #fe7250;
+
+		}
+	</style>
 </head>
 
 <body>
 	<div id="container">
-        <div id="form-box">
-            <h1 id="title">Sign In</h1>
-            <span id="underline-box"></span>
-            <form>
-                <div id="inputGrp">
-                    <div id="input-field">
-                        <i class="fa-solid fa-envelope"></i>
-                        <input type="email" placeholder="Email">
-                    </div>
-                    <div id="input-field">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" placeholder="Password">
-                    </div>
-                    <p id="forgetPassword">Forgot Password? <a href="#">Click Here!</a>
-                    </p>
+		<div id="form-box">
+			<h1 id="title">Sign In</h1>
+			<span id="underline-box"></span>
+			<form action="checklogIn" method="post">
+				<div id="inputGrp">
+					<div id="input-field">
+						<i class="fa-solid fa-envelope"></i>
+						<input type="email" placeholder="Email" name="email" required>
+					</div>
+					<div id="input-field">
+						<i class="fa-solid fa-lock"></i>
+						<input type="password" placeholder="Password" name="password" required>
+					</div>
+					<p id="forgetPassword">Forgot Password? <a href="#">Click Here!</a>
+					</p>
 
-                </div>
-                <div id="message-box"></div>
-                <div id="buttonGrp">
-                    <button type="button" id="signInButton">Sign In</button>
-                </div>
-            </form>
-            <div id="SignUpLink">
-                <p>New User? <a href="#">Sign Up</a></p>
-            </div>
+				</div>
+				<div id="message-box" th:text="${msg}"></div>
+				<div id="buttonGrp">
+					<input type="submit" value="Sign In" id="signInButton">
+				</div>
+			</form>
+			<div id="SignUpLink">
+				<p>New User? <a href="#">Sign Up</a></p>
+			</div>
 
-        </div>
+		</div>
 
-    </div>
-   
+	</div>
+
 </body>
 
 </html>

@@ -1,7 +1,7 @@
 package com.nischitha.spring.fitnesstrackertest.entities;
 
 import java.util.Date;
-
+import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Getter;
@@ -39,5 +40,7 @@ public class User {
 	private int pincode;
 	private String country;
 	private String gender;
+	@OneToMany(mappedBy="user")
+	private Set<Workout> workout;
 	
 }
