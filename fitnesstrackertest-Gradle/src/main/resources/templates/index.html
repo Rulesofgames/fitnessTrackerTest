@@ -148,16 +148,16 @@
             <div class="social-media">
                 <ul>
                     <li>
-                        <img src="../facebook.png" />
+                        <img th:src="@{/FitnessTrackerTest-Images/facebook.png}" />
                     </li>
                     <li>
-                        <img src="../FitnessTrackerTest-Images/twitter.png" />
+                        <img th:src="@{/FitnessTrackerTest-Images/instagram.png}" />
                     </li>
                     <li>
-                        <img src="Images/instagram.png" />
+                        <img th:src="@{/FitnessTrackerTest-Images/twitter.png}" />
                     </li>
                     <li>
-                        <img src="Images/linkedin.png" />
+                        <img th:src="@{/FitnessTrackerTest-Images/linkedin.png}" />
                     </li>
 
                 </ul>
@@ -168,7 +168,7 @@
 
     <script>
         let backgroundImg = document.getElementById("sliderId");
-        let images = ['Images/e3.jpg', 'Images/e11.jpg', 'Images/e14.jpg'];
+        let images = ['/FitnessTrackerTest-Images/e3.jpg', '/FitnessTrackerTest-Images/e11.jpg', '/FitnessTrackerTest-Images/e14.jpg'];
         let len = images.length, count = 0;
 
         function Slider() {

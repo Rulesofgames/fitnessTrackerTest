@@ -41,7 +41,8 @@
 		<div>MYFITNESSBUDDY</div>
 		<div id="NavigationBlock">
 			<a href="">Summary</a>
-			<a th:href="@{addWorkout}">Add Workout</a>
+			<a th:href="@{'addWorkout?id='+${userId}}">Add Workout</a>
+			<a th:href="@{addSets}">Add Sets</a>
 			<a href="">Statistics</a>
 			<a href="">Profile</a>
 			<a href="">Log out</a>

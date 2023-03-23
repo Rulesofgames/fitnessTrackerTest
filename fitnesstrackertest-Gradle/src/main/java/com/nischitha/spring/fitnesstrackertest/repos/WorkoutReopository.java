@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.nischitha.spring.fitnesstrackertest.entities.Workout;
 
-public interface WorkoutReopository extends JpaRepository<Workout, Long> {
+public interface WorkoutReopository extends JpaRepository<Workout, Integer> {
 
 }

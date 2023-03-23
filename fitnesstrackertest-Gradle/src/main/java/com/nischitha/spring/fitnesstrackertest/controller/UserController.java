@@ -20,77 +20,87 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.nischitha.spring.fitnesstrackertest.entities.User;
 import com.nischitha.spring.fitnesstrackertest.repos.UserRepository;
 import com.nischitha.spring.fitnesstrackertest.services.FitnessTrackerService;
-
+import com.nischitha.spring.fitnesstrackertest.util.EmailUtil;
 
 @Controller
 public class UserController {
-	
-	private static final Logger LOGGER=LoggerFactory.getLogger(UserController.class);
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
 	UserRepository userRepo;
 	
 	@Autowired
+	EmailUtil emailUtil;
+
+	@Autowired
 	FitnessTrackerService fitnessTrackerServiceImpl;
-	
+
 	@Autowired
 	public UserController(UserRepository userRepo) {
-		this.userRepo=userRepo;
+		this.userRepo = userRepo;
 	}
-	
-	
-	
+
 	@RequestMapping("SignUpPage")
 	public String displaySignUpPage() {
-		
+
 		return "displaySignUpPage";
 	}
-	
+
 	@RequestMapping("SignInPage")
 	public String displaySignInPage() {
-		
+
 		return "displaySignInPage";
-		
+
 	}
-	
+
 	@PostMapping("registerUser")
-	public String registerUser(@ModelAttribute("user")User user) {
-		
-		LOGGER.info("Inside Register User"+user);
-		LOGGER.info("date is"+user.getDOB());
-	    userRepo.save(user);
-	    LOGGER.info("user saved successfully");
-		return "displaySignInPage";
+	public String registerUser(@ModelAttribute("user") User user,ModelMap modelmap) {
+
+		LOGGER.info("Inside Register User" + user);
+		LOGGER.info("date is" + user.getDOB());
+		User savedUser = userRepo.save(user);
+		if (savedUser == null) {
+			modelmap.addAttribute("msg","User registration failed.Please try again");
+			return "displaySignUpPage"; 
+		} else {
+			modelmap.addAttribute("msg","User registration success.Please log in to continue");
+			emailUtil.sendEmail(user.getEmail(),"Start your fitness journey", user.getFirstName()+", Welcome to MYFITNESSBUDYY");
+			LOGGER.info("user saved successfully");
+			return "displaySignUpPage";
+		}
 	}
-	
+
 	@GetMapping("checkEmail")
 	public @ResponseBody Map<String, Boolean> checkEmailExists(@RequestParam("email") String email) {
-		LOGGER.info("Inside checkEmailExists"+email);
-	    boolean exists = userRepo.existsByEmail(email);
-	    LOGGER.info("Does email id exists?"+exists);
-	    Map<String, Boolean> response = new HashMap<>();
-	    response.put("exists", exists);
-	    return response;
+		LOGGER.info("Inside checkEmailExists" + email);
+		boolean exists = userRepo.existsByEmail(email);
+		LOGGER.info("Does email id exists?" + exists);
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("exists", exists);
+		return response;
 	}
-	
+
 	@GetMapping("validatePassword")
-	public @ResponseBody Map<String,String> validatePassword(@RequestParam("password") String password){
-		
+	public @ResponseBody Map<String, String> validatePassword(@RequestParam("password") String password) {
+
 		return fitnessTrackerServiceImpl.checkPassword(password);
-		
+
 	}
-	
+
 	@PostMapping("checklogIn")
-	public String checkLogIn(@RequestParam("email")String email,@RequestParam("password")String password,ModelMap modelmap) {
-		 User user=userRepo.findByEmail(email);
-		 if(user==null||!user.getPassword().equals(password)) {
-			 modelmap.addAttribute("msg","Username or password is incorrect.Please enter correct username and password");
-			 return "displaySignInPage";
-		 }else {
-			 return "displayHomePage";
-		 }
-		
+	public String checkLogIn(@RequestParam("email") String email, @RequestParam("password") String password,
+			ModelMap modelmap) {
+		User user = userRepo.findByEmail(email);
+		int id = user.getId();
+		modelmap.addAttribute("userId", id);
+		if (user == null || !user.getPassword().equals(password)) {
+			modelmap.addAttribute("msg",
+					"Username or password is incorrect.Please enter correct username and password");
+			return "displaySignInPage";
+		} else {
+			return "displayHomePage";
+		}
+
 	}
-	
-	
 
 }

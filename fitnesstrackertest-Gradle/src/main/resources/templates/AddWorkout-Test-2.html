@@ -1,0 +1,148 @@
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+	<title>Home Page</title>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+			font-family: 'Oswald', sans-serif;
+
+		}
+
+		#headerBlock {
+			display: flex;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 100;
+			height: 35px;
+			background-color: #eaeaea;
+			justify-content: space-around;
+		}
+
+		#NavigationBlock {
+			display: flex;
+			justify-content: space-around;
+
+		}
+
+		#mainBlock {
+			margin-top: 60px;
+		}
+        #exerciseLog{
+			display:flex;
+		}
+		#whole-modal-window {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.1);
+		}
+
+		#addExerciseModal {
+
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 40%;
+			height: 55%;
+			border: 1px solid black;
+			border-radius: 3px;
+			box-shadow: 0px 0 px 2px;
+		}
+
+		#modalHeader {
+
+			background: #fe7250;
+			text-align: center;
+			text-transform: uppercase;
+			padding: 5px 5px;
+
+		}
+
+		#modalHeader .close-modal {
+			font-size: 50px;
+			float: right;
+		}
+
+		#modalHeader .close-modal:hover {
+			cursor: pointer;
+			color: #333;
+		}
+
+		#modalBody {}
+	</style>
+</head>
+
+<body>
+	<div id="headerBlock">
+		<div>MYFITNESSBUDDY</div>
+		<div id="NavigationBlock">
+			<a href="">Summary</a>
+			<a th:href="@{addWorkout}">Add Workout</a>
+			<a href="">Statistics</a>
+			<a href="">Profile</a>
+			<a href="">Log out</a>
+		</div>
+	</div>
+	<div id="mainBlock">
+
+		<form action="saveWorkout" method="post">
+			<div id="input-field">
+				<label for="date">Date:</label>
+				<input type="date" id="date" name="date" required>
+			</div>
+
+			<div id="input-field">
+				<label for="start-time">Start Time:</label>
+				<input type="time" id="startTime" name="startTime" required>
+			</div>
+
+			<div id="input-field">
+				<label for="end-time">End Time:</label>
+				<input type="time" id="endTime" name="endTime" required>
+			</div>
+
+			<div id="input-field">
+				<label for="bodyWeight">BodyWeight</label>
+				<input type="number" id="bodyWeight" name="bodyWeight" required>
+			</div>
+
+			<div id="input-field">
+				<label for="notes">Notes:</label>
+				<textarea id="notes" name="notes"></textarea>
+			</div>
+			<input type="hidden" th:value="${userId}" hidden name="userId">
+			<input type="Submit" value="submit">
+		</form>
+		
+		<div id="message-box" th:text="${msg}"></div>
+		
+		
+
+
+	</div>
+	<script>
+		setTimeout(function(){
+			let messageBox=document.getElementById("message-box");
+			messageBox.innerText="";
+			
+		},3000);
+		
+	</script>
+</body>
+
+</html>

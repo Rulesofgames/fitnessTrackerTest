@@ -1,11 +1,14 @@
 package com.nischitha.spring.fitnesstrackertest.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nischitha.spring.fitnesstrackertest.repos.ExerciseRepository;
 import com.nischitha.spring.fitnesstrackertest.repos.UserRepository;
 
 @Service
@@ -13,6 +16,9 @@ public class FitnessTrackerServiceImpl implements FitnessTrackerService {
 
 	@Autowired
 	UserRepository userRepo;
+	
+	@Autowired
+	ExerciseRepository exerciseRepo;
 	
 	@Override
 	public Map<String, String> checkPassword(String password) {
@@ -40,7 +46,30 @@ public class FitnessTrackerServiceImpl implements FitnessTrackerService {
 		}
 		return response;
 	}
+
+	@Override
+	public Map<String, List<String>> findExerciseCategories() {
+		
+		Map<String,List<String>> LoadExercise=new HashMap<>();
+		List<String> categoryList=exerciseRepo.findDistinctExerciseCategories();
+		categoryList.forEach(c->{
+			List<String>list=exerciseRepo.findListOfExercises(c);
+			LoadExercise.put(c, list);
+			
+		});
+		return LoadExercise;
+		
+	}
 	
+	/*
+	@Override
+	public List<String> findExerciseCategories() {
+		
+		List<String> exerciseCategoryList=new ArrayList<>();
+		exerciseCategoryList=exerciseRepo.findDistinctExerciseCategories();
+		return exerciseCategoryList;
+	}
+	*/
 	
 
 }

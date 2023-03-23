@@ -1,6 +1,8 @@
+<!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/">
 
 <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -13,6 +15,7 @@
 			padding: 0;
 			margin: 0;
 			font-family: 'Oswald', sans-serif;
+			box-sizing: border-box;
 
 		}
 
@@ -23,16 +26,97 @@
 			left: 0;
 			right: 0;
 			z-index: 100;
-			height:35px;
+			height: 35px;
 			background-color: #eaeaea;
-			justify-content:space-around;
+			justify-content: space-around;
 		}
 
 		#NavigationBlock {
 			display: flex;
-			justify-content:space-around;
+			justify-content: space-around;
 
 		}
+
+		#mainBlock {
+			margin-top: 60px;
+		}
+
+
+		#whole-workout-modal-window,
+		#whole-exercise-modal-window {
+
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0,0,0,0.7);
+
+		}
+
+		#addExerciseModal,
+		#addWorkoutModal {
+
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 40%;
+			height: 55%;
+			border: 1px solid black;
+			border-radius: 3px;
+			box-shadow: 0px 0 px 2px;
+			background-color: #fff;
+		}
+
+		.modalHeader {
+
+			background: #fe7250;
+			text-align: center;
+			text-transform: uppercase;
+			padding: 5px 5px;
+
+		}
+
+		.input-field {
+			background: #eaeaea;
+		}
+
+		#close-exercise-modal,
+		#close-workout-modal {
+			font-size: 50px;
+			float: right;
+		}
+
+		#close-exercise-modal:hover,
+		#close-workout-modal:hover {
+			cursor: pointer;
+			color: #333;
+		}
+		.buttnGrp{
+			margin: 11px auto;
+		}
+		.buttnGrp input[type=submit]{
+			background: #fe7250;
+			color: #fff;
+			height: 45px;
+			width: 130px;
+			border-radius: 20px;
+			font-size: 15px;
+			padding: 2px 6px;
+			border: 0;
+			outline: 0;
+			cursor: pointer;
+
+			transition: all ease-in-out 1s;
+		}
+		#mainTable{
+			border:1;
+		    text-align: center;
+		}
+		
+		
 	</style>
 </head>
 
@@ -48,39 +132,173 @@
 		</div>
 	</div>
 	<div id="mainBlock">
-		
-		<form action="" method="">
-			<div id="input-field">
-				<label for="date">Date:</label>
-				<input type="date" id="date" name="date" required>	
-			</div>
-			
-			<div id="input-field">
-				<label for="start-time">Start Time:</label>
-				<input type="time" id="startTime" name="startTime" required>	
-			</div>
-			
-			<div id="input-field">
-				<label for="end-time">End Time:</label>
-				<input type="time" id="endTime" name="endTime" required>
-			</div>
-			
-			<div id="input-field">
-				<label for="bodyWeight">BodyWeight</label>
-				<input type="number" id="bodyWeight" name="bodyWeight">
-			</div>
-			
-			<div id="input-field">
-				<label for="notes">Notes:</label>
-				<textarea id="notes" name="notes"></textarea>
-			</div>
-			
-			
-		</form>
-		
-		
-	</div>
+		<div id="whole-workout-modal-window">
+			<div id="addWorkoutModal" class="modal">
+				<div class="modalContent">
+					<div class="modalHeader">
+						<span id="close-workout-modal">&times;</span>
+						<h2 id="">Add Workout</h2>
+					</div>
+					<div id="">
+						<form action="saveWorkout" method="post">
+							<div class="input-field">
+								<label for="date">Date:</label>
+								<input type="date" id="date" name="date" required>
+							</div>
 
+							<div class="input-field">
+								<label for="start-time">Start Time:</label>
+								<input type="time" id="startTime" name="startTime" required>
+							</div>
+
+							<div class="input-field">
+								<label for="end-time">End Time:</label>
+								<input type="time" id="endTime" name="endTime" required>
+							</div>
+
+							<div class="input-field">
+								<label for="bodyWeight">BodyWeight</label>
+								<input type="number" id="bodyWeight" name="bodyWeight" required>
+							</div>
+
+							<div class="input-field">
+								<label for="notes">Notes:</label>
+								<textarea id="notes" name="notes"></textarea>
+							</div>
+							<input type="hidden" th:value="${userId}" name="userId">
+							<div class="buttnGrp">
+								<input type="Submit" value="Submit">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="whole-exercise-modal-window">
+			<div id="addExerciseModal" class="modal">
+				<div class="modalContent">
+					<div class="modalHeader">
+						<span id="close-exercise-modal">&times;</span>
+						<h2 id="">Add Exercise</h2>
+					</div>
+					<div id="">
+						<form action="saveSet" method="post">
+							<div class="input-field">
+								<label for="weight">Weight:</label>
+								<input type="number" id="weight" name="weight" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Reps:</label>
+								<input type="number" id="reps" name="reps" required>
+							</div>
+							<div class="input-field">
+								<label for="notes">Notes:</label>
+								<textarea id="notes" name="notes"></textarea>
+							</div>
+							
+							Select  Exercise:<select name="exerciseId">
+								<option value="">Select Exercise</option>
+								<option th:each="exercise:${exerciseList}" th:value="${exercise.id}" th:text="${exercise.exerciseName}"></option>
+							</select>
+							<input type="hidden" name="workoutId">
+							
+							<div class="buttnGrp">
+							<input type="Submit" value="Submit">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<table id="mainTable">
+			<tr>
+				<th>WorkoutId</th>
+				<th>WorkoutDate</th>
+				<th>StartTime</th>
+				<th>End Time</th>
+				<th>BodyWeight</th>
+				<th>Notes</th>
+				<th>Add Exercise</th>
+
+			</tr>
+			<tr th:each="workout:${workoutList}">
+				<td th:text="${workout.id}"></td>
+				<td th:text="${workout.date}"></td>
+				<td th:text="${workout.startTime}"></td>
+				<td th:text="${workout.endTime}"></td>
+				<td th:text="${workout.bodyWeight}"></td>
+				<td th:text="${workout.notes}"></td>
+				<td><button type="button" class="addExerciseButton" th:attr="data-workout-id=${workout.id}">Add
+						Exercise</button></td>
+
+
+			</tr>
+		</table>
+		<button type="button" id="AddWorkoutBtn">Add Workout</button>
+
+	</div>
+	<script>
+		console.log("Inside script");
+		let workoutModal = document.getElementById("whole-workout-modal-window");
+		let openWorkoutBtn = document.getElementById("AddWorkoutBtn");
+		let closeWorkoutModal = document.getElementById("close-workout-modal");
+
+		openWorkoutBtn.addEventListener("click", function (event) {
+
+			workoutModal.style.display = 'block';
+
+
+		});
+
+		closeWorkoutModal.addEventListener("click", function () {
+			workoutModal.style.display = 'none';
+
+		});
+
+
+
+		let exerciseModal = document.getElementById("whole-exercise-modal-window");
+		let addExerciseButtons = document.querySelectorAll(".addExerciseButton");
+		let closeExerciseModal = document.getElementById("close-exercise-modal");
+
+		addExerciseButtons.forEach(function (button) {
+
+			button.addEventListener("click", function () {
+				console.log("Inside click button event");
+				exerciseModal.style.display = "block";
+				let workoutId = button.getAttribute("data-workout-id");
+				console.log("selected workout Id is" + workoutId);
+				let workoutInputId = document.querySelector('input[name="workoutId"]');
+				workoutInputId.value = Number(workoutId);
+
+			});
+
+		});
+
+		closeExerciseModal.addEventListener("click", function () {
+			exerciseModal.style.display = 'none';
+
+		});
+
+		window.addEventListener("click", function (e) {
+			if (e.target == exerciseModal) {
+				exerciseModal.style.display = 'block';
+			} else if (e.target == workoutModal) {
+				workoutModal.style.display = 'none';
+			}
+
+		});
+		
+		//populate exercise drop down
+		
+
+
+	</script>
 </body>
 
 </html>

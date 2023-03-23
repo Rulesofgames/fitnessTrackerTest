@@ -1,0 +1,250 @@
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+	<title>Home Page</title>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+			font-family: 'Oswald', sans-serif;
+
+		}
+
+		#headerBlock {
+			display: flex;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 100;
+			height: 35px;
+			background-color: #eaeaea;
+			justify-content: space-around;
+		}
+
+		#NavigationBlock {
+			display: flex;
+			justify-content: space-around;
+
+		}
+
+		#mainBlock {
+			margin-top: 60px;
+		}
+        #exerciseLog{
+			display:flex;
+		}
+		#whole-modal-window {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.1);
+		}
+
+		#addExerciseModal {
+
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 40%;
+			height: 55%;
+			border: 1px solid black;
+			border-radius: 3px;
+			box-shadow: 0px 0 px 2px;
+		}
+
+		#modalHeader {
+
+			background: #fe7250;
+			text-align: center;
+			text-transform: uppercase;
+			padding: 5px 5px;
+
+		}
+
+		#modalHeader .close-modal {
+			font-size: 50px;
+			float: right;
+		}
+
+		#modalHeader .close-modal:hover {
+			cursor: pointer;
+			color: #333;
+		}
+
+		#modalBody {}
+	</style>
+</head>
+
+<body>
+	<div id="headerBlock">
+		<div>MYFITNESSBUDDY</div>
+		<div id="NavigationBlock">
+			<a href="">Summary</a>
+			<a th:href="@{addWorkout}">Add Workout</a>
+			<a href="">Statistics</a>
+			<a href="">Profile</a>
+			<a href="">Log out</a>
+		</div>
+	</div>
+	<div id="mainBlock">
+
+		<form action="" method="">
+			<div id="input-field">
+				<label for="date">Date:</label>
+				<input type="date" id="date" name="date" required>
+			</div>
+
+			<div id="input-field">
+				<label for="start-time">Start Time:</label>
+				<input type="time" id="startTime" name="startTime" required>
+			</div>
+
+			<div id="input-field">
+				<label for="end-time">End Time:</label>
+				<input type="time" id="endTime" name="endTime" required>
+			</div>
+
+			<div id="input-field">
+				<label for="bodyWeight">BodyWeight</label>
+				<input type="number" id="bodyWeight" name="bodyWeight" required>
+			</div>
+
+			<div id="input-field">
+				<label for="notes">Notes:</label>
+				<textarea id="notes" name="notes"></textarea>
+			</div>
+
+			<button id="open-modal" type="button">Add Exercise</button>
+			
+			<div id="exerciseLog">
+				
+			</div>
+
+			<div id="whole-modal-window">
+				<div id="addExerciseModal" class="modal">
+					<div id="modalContent">
+						<div id="modalHeader">
+							<span class="close-modal">&times;</span>
+							<h2 id="modalHeaderText"></h2>
+						</div>
+						<div id="categoryModalBody">
+						</div>
+						<div id="exerciseModalBody">
+						</div>
+					</div>
+				</div>
+			</div>
+			<input type="Submit" value="submit">
+		</form>
+
+
+	</div>
+	<script>
+		console.log("Inside script")
+		let modal = document.getElementById("whole-modal-window");
+		let openModal = document.getElementById("open-modal");
+		let categoryContainer = document.getElementById("categoryModalBody");
+		let exerciseContainer = document.getElementById("exerciseModalBody");
+		let modalHeaderText = document.getElementById("modalHeaderText");
+		let exerciseLog=document.getElementById("exerciseLog");
+
+		let closeModal = document.querySelector(".close-modal");
+		openModal.addEventListener('click', function () {
+			event.preventDefault();
+			console.log("Inside click");
+			modal.style.display = 'block';
+			categoryContainer.innerHTML="";
+			exerciseContainer.innerHTML="";//or try giving exerciseContainer.style.display='none';
+			categoryContainer.style.display='block';
+			modalHeaderText.innerHTML='Select Exercise';
+
+			//make AJAX call to workout Controller to get the list of exercisecategory
+
+			$.ajax({
+
+				url: "getExerciseCategories",
+				method: "GET",
+				success: function (response) {
+
+
+					Object.keys(response).forEach(function (category) {
+						var categoryLink = document.createElement("a");
+						categoryLink.href = "#";
+						categoryLink.innerHTML = category;
+
+
+						//add event listener to the link to display exercises under that category
+						categoryLink.addEventListener('click', function (event) {
+							event.preventDefault();
+							console.log("Inside exercise list");
+							categoryContainer.style.display = 'none';
+							exerciseContainer.style.display = 'block';
+							modalHeaderText.innerText = category;
+
+							//display exercises for clicked category
+							response[category].forEach(function (exercise) {
+
+								var exerciseLink = document.createElement("a");
+								exerciseLink.href = "#";
+								exerciseLink.innerHTML = exercise;
+								
+								
+								exerciseLink.addEventListener('click',function(event,exercise){
+									event.preventDefault();
+									let exerciseName=document.createElement("h2");
+									exerciseName.innerText="why is exercise not getting passed";
+									exerciseLog.appendChild(exerciseName);
+									modal.style.display = 'none';
+									
+								});
+								exerciseContainer.appendChild(exerciseLink);
+								exerciseContainer.appendChild(document.createElement("br"));
+
+
+							});
+
+
+						});
+						categoryContainer.appendChild(categoryLink);
+						categoryContainer.appendChild(document.createElement("br"));
+
+					});
+
+				},
+
+				error: function (xhr, status, error) {
+
+				}
+
+			}
+			);
+
+
+		});
+
+		closeModal.addEventListener('click', function () {
+
+			modal.style.display = 'none';
+		});
+
+		window.addEventListener('click', function (e) {
+			if (e.target == modal) {
+				modal.style.display = 'none';
+			}
+		});
+	</script>
+</body>
+
+</html>

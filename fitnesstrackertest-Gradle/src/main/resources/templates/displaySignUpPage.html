@@ -28,37 +28,42 @@
 						signupButton.attr('disabled', false);
 						emailMessageBlock.text("");
 					}
-				
+
 				});
 			});
-			
-			var passwordInput=$('#password');
-			passwordInput.on('input',function(){
-				var password=passwordInput.val();
-				$.get('validatePassword',{password:password},function(response){
-					var message=response.msg;
+
+			var passwordInput = $('#password');
+			passwordInput.on('input', function () {
+				var password = passwordInput.val();
+				$.get('validatePassword', {password: password}, function (response) {
+					var message = response.msg;
 					console.log(message);
-					console.log("response length is"+message.length);
-					if(message.length==0){
+					console.log("response length is" + message.length);
+					if (message.length == 0) {
 						signupButton.attr('disabled', false);
 						passwordMessageBlock.text("");
-						
-					}else{
+
+					} else {
 						signupButton.attr('disabled', true);
 						signupButton.addClass("signUpButtonDisableCss");
 						passwordMessageBlock.text(message);
-						
+
 					}
-					
+
 				});
-				
-				
-				
+
+
+
 			});
-			
+
 		});
 
 
+		setTimeout(function () {
+
+			let sucessMessageBlock = document.getElementById("sucessMessageBlock");
+			sucessMessageBlock.innerText = "";
+		}, 3000);
 
 	</script>
 
@@ -85,7 +90,8 @@
 			position: absolute;
 			width: 500px;
 			max-width: 700px;
-			top: 20px;
+			top: 11px;
+			bottom: 11px;
 			left: 33%;
 			bottom: 20px;
 			background-color: #fff;
@@ -173,13 +179,14 @@
 			text-align: left;
 			color: orangered;
 			font-size: 11px;
-			
+
 
 		}
-		#passwordFlashMessageBlock{
+
+		#passwordFlashMessageBlock {
 			font-size: 9.8px;
-			
-			
+
+
 		}
 
 
@@ -295,6 +302,16 @@
 			background: #eaeaea;
 
 		}
+
+		#sucessMessageBlock {
+			height: 16px;
+			width: 100%;
+			margin-top: -12px;
+			text-align: left;
+			color: #fe7250;
+			font-size: 13px;
+			font-weight:bold;
+		}
 	</style>
 </head>
 
@@ -303,97 +320,100 @@
 		<div id="form-box">
 			<h1 id="title">Sign Up</h1>
 			<span id="underline-box"></span>
-			<form action="registerUser" method="post">
-				<div id="inputGrp">
-					<div class="input-field">
-						<i class="fa-solid fa-envelope"></i>
-						<input type="email" placeholder="Email" name="email" id="email" maxlength="49" required>
-					</div>
-					<div id="emailFlashMessageBlock">
-						<span id="emailFlashMessageSubBlock"></span>
-					</div>
-					<div class="input-field">
-						<i class="fa-solid fa-lock"></i>
-						<input type="password" placeholder="Password" name="password" maxlength="14" required id="password">
-					</div>
-					<div id="passwordFlashMessageBlock">
-						<span id="passwordFlashMessageSubBlock"></span>
-					</div>
-					<div class="input-field" id="firstnameField">
-						<i class="fa-solid fa-user"></i>
-						<input type="text" placeholder="FirstName" name="firstName" maxlength="29" required>
-					</div>
-					<div id="firstNameFlashMessageBlock">
-						<span></span>
-					</div>
-					<div class="input-field" id="lastnameField">
-						<i class="fa-solid fa-user"></i>
-						<input type="text" placeholder="LastName" name="lastName" maxlength="29" required>
-					</div>
-					<div id="lastNameFlashMessageBlock">
-						<span></span>
-					</div>
-
-					<div class="input-field" id="DOB">
-						<i class="fa-solid fa-calendar-days"></i>
-						<input type="date" placeholder="DOB" name="DOB" required>
-					</div>
-					<div id="DOBFlashMessageBlock">
-						<span></span>
-					</div>
-					<div class="input-field" id="address">
-						<i class="fa-solid fa-address-card"></i>
-						<input type="text" placeholder="Address" name="address" maxlength="99" required>
-					</div>
-					<div id="addressFlashMessageBlock">
-						<span></span>
-					</div>
-					<div class="address-box">
-						<div class="input-field" id="pincode">
-							<i class="fa-solid fa-location-dot"></i>
-							<input type="text" placeholder="Pincode" name="pincode" maxlength="7" required>
+			<div id="sucessMessageBlock" th:text="${msg}"></div>
+			<div id="inputGrp">
+				<form action="registerUser" method="post">
+					<div id="inputGrp">
+						<div class="input-field">
+							<i class="fa-solid fa-envelope"></i>
+							<input type="email" placeholder="Email" name="email" id="email" maxlength="49" required>
+						</div>
+						<div id="emailFlashMessageBlock">
+							<span id="emailFlashMessageSubBlock"></span>
+						</div>
+						<div class="input-field">
+							<i class="fa-solid fa-lock"></i>
+							<input type="password" placeholder="Password" name="password" maxlength="14" required
+								id="password">
+						</div>
+						<div id="passwordFlashMessageBlock">
+							<span id="passwordFlashMessageSubBlock"></span>
+						</div>
+						<div class="input-field" id="firstnameField">
+							<i class="fa-solid fa-user"></i>
+							<input type="text" placeholder="FirstName" name="firstName" maxlength="29" required>
+						</div>
+						<div id="firstNameFlashMessageBlock">
+							<span></span>
+						</div>
+						<div class="input-field" id="lastnameField">
+							<i class="fa-solid fa-user"></i>
+							<input type="text" placeholder="LastName" name="lastName" maxlength="29" required>
+						</div>
+						<div id="lastNameFlashMessageBlock">
+							<span></span>
 						</div>
 
-						<div class="input-field" id="country">
-							<i class="fa-solid fa-globe"></i>
-							<input type="text" placeholder="Country" name="country" maxlength="29" required>
+						<div class="input-field" id="DOB">
+							<i class="fa-solid fa-calendar-days"></i>
+							<input type="date" placeholder="DOB" name="DOB" required>
+						</div>
+						<div id="DOBFlashMessageBlock">
+							<span></span>
+						</div>
+						<div class="input-field" id="address">
+							<i class="fa-solid fa-address-card"></i>
+							<input type="text" placeholder="Address" name="address" maxlength="99" required>
+						</div>
+						<div id="addressFlashMessageBlock">
+							<span></span>
+						</div>
+						<div class="address-box">
+							<div class="input-field" id="pincode">
+								<i class="fa-solid fa-location-dot"></i>
+								<input type="text" placeholder="Pincode" name="pincode" maxlength="7" required>
+							</div>
+
+							<div class="input-field" id="country">
+								<i class="fa-solid fa-globe"></i>
+								<input type="text" placeholder="Country" name="country" maxlength="29" required>
+							</div>
+
 						</div>
 
-					</div>
+						<div class="gender-box">
+							<div>
+								<p>Gender:</p>
+							</div>
+							<div class="gender-sub-box">
 
-					<div class="gender-box">
-						<div>
-							<p>Gender:</p>
+								<input type="radio" name="gender" value="male" id="male">
+								<label for="Male">Male</label>
+							</div>
+							<div class="gender-sub-box">
+
+								<input type="radio" name="gender" value="female" id="female">
+								<label for="Female">Female</label>
+							</div>
+
 						</div>
-						<div class="gender-sub-box">
 
-							<input type="radio" name="gender" value="male" id="male">
-							<label for="Male">Male</label>
+						<div class="tikbox">
+							<input id="checkbox" type="checkbox" required>
+							<label for="checkbox">I accept the <a href="#">Terms and Conditions</a>.</label>
 						</div>
-						<div class="gender-sub-box">
-
-							<input type="radio" name="gender" value="female" id="female">
-							<label for="Female">Female</label>
+						<div id="buttonGrp">
+							<input type="submit" value="Sign Up" id="signUpButton">
 						</div>
+				</form>
 
-					</div>
 
-					<div class="tikbox">
-						<input id="checkbox" type="checkbox" required>
-						<label for="checkbox">I accept the <a href="#">Terms and Conditions</a>.</label>
-					</div>
-					<div id="buttonGrp">
-						<input type="submit" value="Sign Up" id="signUpButton">
-					</div>
-			</form>
-
+			</div>
+			<div id="SignInLink">
+				<p>Already a User? <a href="#">Sign In</a></p>
+			</div>
 
 		</div>
-		<div id="SignInLink">
-			<p>Already a User? <a href="#">Sign In</a></p>
-		</div>
-
-	</div>
 
 
 
