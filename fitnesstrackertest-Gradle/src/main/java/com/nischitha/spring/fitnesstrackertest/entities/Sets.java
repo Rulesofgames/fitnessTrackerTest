@@ -3,7 +3,11 @@ package com.nischitha.spring.fitnesstrackertest.entities;
 import java.util.Date;
 import java.util.Set;
 
+import org.hibernate.annotations.CascadeType;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,8 +29,12 @@ public class Sets {
 	
 	private int weight;
 	private int reps;
+	private int minutes;
+	private int distance;
+	@Column(name="kcal")
+	private int Kcal;
 	private String notes;
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="workout_id")
 	private Workout workout;
 	@ManyToOne

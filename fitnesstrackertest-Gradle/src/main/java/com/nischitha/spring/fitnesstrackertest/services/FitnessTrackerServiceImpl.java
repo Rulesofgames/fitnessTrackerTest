@@ -1,5 +1,6 @@
 package com.nischitha.spring.fitnesstrackertest.services;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +9,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nischitha.spring.fitnesstrackertest.entities.Workout;
 import com.nischitha.spring.fitnesstrackertest.repos.ExerciseRepository;
 import com.nischitha.spring.fitnesstrackertest.repos.UserRepository;
+import com.nischitha.spring.fitnesstrackertest.repos.WorkoutReopository;
 
 @Service
 public class FitnessTrackerServiceImpl implements FitnessTrackerService {
@@ -19,6 +22,9 @@ public class FitnessTrackerServiceImpl implements FitnessTrackerService {
 	
 	@Autowired
 	ExerciseRepository exerciseRepo;
+	
+	@Autowired
+	WorkoutReopository workoutRepo;
 	
 	@Override
 	public Map<String, String> checkPassword(String password) {
@@ -59,6 +65,31 @@ public class FitnessTrackerServiceImpl implements FitnessTrackerService {
 		});
 		return LoadExercise;
 		
+	}
+
+	@Override
+	public Workout saveWorkout(Workout workout) {
+		//calculate Type of workout
+		String workoutType="";
+		int hour=workout.getStartTime().getHour();
+		if(hour>=5&&hour<12) {
+			workoutType="Morning";
+		}else if(hour>=12&&hour<16) {
+			workoutType="MidDay";
+		}else if(hour>=16&&hour<18) {
+			workoutType="Afternoon";
+		}else if(hour>=18&&hour<21) {
+			workoutType="Evening";
+		}else {
+			workoutType="Night";
+		}
+		workout.setWorkoutType(workoutType);
+		
+		//calculate duration of workout
+		Duration duration=Duration.between(workout.getStartTime(), workout.getEndTime());
+		workout.setDuration((int)duration.toMinutes());
+		
+		return workoutRepo.save(workout);
 	}
 	
 	/*

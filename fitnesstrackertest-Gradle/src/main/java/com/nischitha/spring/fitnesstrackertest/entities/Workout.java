@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -33,11 +34,14 @@ public class Workout {
 	private LocalTime endTime;
 	private int bodyWeight;
 	private String notes;
+	private int duration;
+	@Column(name="workouttype")
+	private String workoutType;
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
 	
-	@OneToMany(mappedBy="workout",fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="workout",fetch=FetchType.EAGER,cascade=CascadeType.ALL)
 	private Set<Sets> sets;
 
 }

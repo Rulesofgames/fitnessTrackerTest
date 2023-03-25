@@ -1,0 +1,48 @@
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+ 
+
+    <title></title>
+    <style>
+		#mainTable{
+			border:1px solid;
+			width:100%;
+		}
+        
+    </style>
+</head>
+
+<body>
+	
+	<table id="mainTable">
+		<tr>
+			<th>Exercise</th>
+			<th>SetId</th>
+			<th>Weight</th>
+			<th>Reps</th>
+			<th>Minutes</th>
+			<th>Distance</th>
+			<th>Kcal</th>
+			<th>Notes</th>
+		</tr>
+		<tr th:each="set:${setsList}">
+			<td th:text="${set.exercise.exerciseName}"></td>
+			<td th:text="${set.id}"></td>
+			<td th:text="${set.weight}"></td>
+			<td th:text="${set.reps}"></td>
+			<td th:text="${set.minutes}"></td>
+			<td th:text="${set.distance}"></td>
+			<td th:text="${set.Kcal}"></td>
+			<td th:text="${set.notes}"></td>
+			<td><a th:href="@{'editSet?id='+${set.id}}"><button type="button">Edit</button></a></td>
+			<td><a th:href="@{'deleteSet?id='+${set.id}}"><button type="button">Delete</button></a></td>
+			
+		</tr>
+		
+	</table>
+   
+</body>
+
+</html>

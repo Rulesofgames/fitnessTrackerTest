@@ -43,7 +43,8 @@
 
 
 		#whole-workout-modal-window,
-		#whole-exercise-modal-window {
+		#whole-exercise-modal-window,
+		#whole-editWorkout-modal-window {
 
 			display: none;
 			position: fixed;
@@ -51,12 +52,13 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: rgba(0,0,0,0.7);
+			background-color: rgba(0, 0, 0, 0.7);
 
 		}
 
-		#addExerciseModal,
-		#addWorkoutModal {
+		.addExerciseModal,
+		.addWorkoutModal,
+		.editWorkoutModal {
 
 			position: fixed;
 			top: 50%;
@@ -94,10 +96,12 @@
 			cursor: pointer;
 			color: #333;
 		}
-		.buttnGrp{
+
+		.buttnGrp {
 			margin: 11px auto;
 		}
-		.buttnGrp input[type=submit]{
+
+		.buttnGrp input[type=submit] {
 			background: #fe7250;
 			color: #fff;
 			height: 45px;
@@ -111,12 +115,14 @@
 
 			transition: all ease-in-out 1s;
 		}
-		#mainTable{
-			border:1;
-		    text-align: center;
+
+		#mainTable {
+			border: 1px solid black;
+			width: 100%;
+			border-collapse: collapse;
+			text-align: center;
+			vertical-align: middle;
 		}
-		
-		
 	</style>
 </head>
 
@@ -133,7 +139,7 @@
 	</div>
 	<div id="mainBlock">
 		<div id="whole-workout-modal-window">
-			<div id="addWorkoutModal" class="modal">
+			<div class="addWorkoutModal">
 				<div class="modalContent">
 					<div class="modalHeader">
 						<span id="close-workout-modal">&times;</span>
@@ -177,7 +183,7 @@
 		</div>
 
 		<div id="whole-exercise-modal-window">
-			<div id="addExerciseModal" class="modal">
+			<div class="addExerciseModal">
 				<div class="modalContent">
 					<div class="modalHeader">
 						<span id="close-exercise-modal">&times;</span>
@@ -185,6 +191,11 @@
 					</div>
 					<div id="">
 						<form action="saveSet" method="post">
+							Select Exercise:<select name="exerciseId">
+								<option value="">Select Exercise</option>
+								<option th:each="exercise:${exerciseList}" th:value="${exercise.id}"
+									th:text="${exercise.exerciseName}"></option>
+							</select>
 							<div class="input-field">
 								<label for="weight">Weight:</label>
 								<input type="number" id="weight" name="weight" required>
@@ -194,18 +205,27 @@
 								<input type="number" id="reps" name="reps" required>
 							</div>
 							<div class="input-field">
+								<label for="reps">Minutes:</label>
+								<input type="number" id="minutes" name="minutes" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Distance:</label>
+								<input type="number" id="distance" name="distance" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Kcal:</label>
+								<input type="number" id="Kcal" name="Kcal" required>
+							</div>
+							<div class="input-field">
 								<label for="notes">Notes:</label>
 								<textarea id="notes" name="notes"></textarea>
 							</div>
-							
-							Select  Exercise:<select name="exerciseId">
-								<option value="">Select Exercise</option>
-								<option th:each="exercise:${exerciseList}" th:value="${exercise.id}" th:text="${exercise.exerciseName}"></option>
-							</select>
+
+
 							<input type="hidden" name="workoutId">
-							
+
 							<div class="buttnGrp">
-							<input type="Submit" value="Submit">
+								<input type="Submit" value="Submit">
 							</div>
 						</form>
 
@@ -215,29 +235,87 @@
 
 		</div>
 
+		<div id="whole-editWorkout-modal-window">
+			<div class="editWorkoutModal">
+				<div class="modalContent">
+					<div class="modalHeader">
+						<span id="close-editworkout-modal">&times;</span>
+						<h2 id="">Edit Workout</h2>
+					</div>
+					<div id="">
+						<form action="saveEditWorkout" method="post">
+							<div class="input-field">
+								<label for="date">Date:</label>
+								<input type="date" id="editWorkoutDate" name="date" required>
+							</div>
+
+							<div class="input-field">
+								<label for="start-time">Start Time:</label>
+								<input type="time" id="editWorkoutStartTime" name="startTime" required>
+							</div>
+
+							<div class="input-field">
+								<label for="end-time">End Time:</label>
+								<input type="time" id="editWorkoutEndTime" name="endTime" required>
+							</div>
+
+							<div class="input-field">
+								<label for="bodyWeight">BodyWeight</label>
+								<input type="number" id="editWorkoutBodyWeight" name="bodyWeight" required>
+							</div>
+
+							<div class="input-field">
+								<label for="notes">Notes:</label>
+								<textarea  id="editWorkoutNotes" name="notes"></textarea>
+							</div>
+							<input type="hidden" id="editWorkoutId" name="id">
+							<div class="buttnGrp">
+								<input type="Submit" value="Submit">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<table id="mainTable">
 			<tr>
 				<th>WorkoutId</th>
 				<th>WorkoutDate</th>
+				<th>WorkoutType</th>
+				<th>Duration(Minutes)</th>
 				<th>StartTime</th>
 				<th>End Time</th>
-				<th>BodyWeight</th>
+				<th>BodyWeight(lbs)</th>
 				<th>Notes</th>
 				<th>Add Exercise</th>
+				<th>Workout Log</th>
+				<th>Edit</th>
+				<th>Delete</th>
 
 			</tr>
 			<tr th:each="workout:${workoutList}">
 				<td th:text="${workout.id}"></td>
 				<td th:text="${workout.date}"></td>
+				<td th:text="${workout.workoutType}"></td>
+				<td th:text="${workout.duration}"></td>
 				<td th:text="${workout.startTime}"></td>
 				<td th:text="${workout.endTime}"></td>
 				<td th:text="${workout.bodyWeight}"></td>
 				<td th:text="${workout.notes}"></td>
-				<td><button type="button" class="addExerciseButton" th:attr="data-workout-id=${workout.id}">Add
+				<td><button type="button" class="addExerciseButton" th:attr="data-workout-id=${workout.id}">Log
 						Exercise</button></td>
-
-
+				<td><a th:href="@{'viewWorkoutLog?id='+${workout.id}}"><button type="button"
+							class="ViewWorkoutLogButton">View Workout
+							Log</button></a></td>
+				<td><button type="button" class="editWorkoutButton"
+						th:attr="data-workout-id=${workout.id},data-workout-date=${workout.date},data-workout-startTime=${workout.startTime},data-workout-endTime=${workout.endTime},data-workout-bodyWeight=${workout.bodyWeight},data-workout-notes=${workout.notes}">Edit</button>
+				</td>
+				<td><a th:href="@{'deleteWorkout?id='+${workout.id}}"><button type="button" class="DeleteButton"
+							th:attr="data-workout-id=${workout.id}">Delete</button></a></td>
 			</tr>
+
 		</table>
 		<button type="button" id="AddWorkoutBtn">Add Workout</button>
 
@@ -285,17 +363,67 @@
 
 		});
 
+
+		let editWorkoutModal = document.getElementById("whole-editWorkout-modal-window");
+		let editWorkoutButtons = document.querySelectorAll(".editWorkoutButton");
+		let closeEditWorkoutModal = document.getElementById("close-editworkout-modal");
+
+		editWorkoutButtons.forEach(function (button) {
+
+			button.addEventListener("click", function () {
+				console.log("Inside edit button event");
+				editWorkoutModal.style.display = "block";
+				let workoutId = button.getAttribute("data-workout-id");
+				console.log("selected workout Id is" + workoutId);
+				let workoutInputId = document.getElementById("editWorkoutId");
+				workoutInputId.value = Number(workoutId);
+
+				let date = button.getAttribute("data-workout-date");
+				let workoutDateInput = document.getElementById("editWorkoutDate");
+				workoutDateInput.value = date;
+
+				let startTime = button.getAttribute("data-workout-startTime");
+				let workoutStartTimeInput = document.getElementById("editWorkoutStartTime");
+				workoutStartTimeInput.value = startTime;
+
+				let endTime = button.getAttribute("data-workout-endTime");
+				let workoutEndTimeInput = document.getElementById("editWorkoutEndTime");
+				workoutEndTimeInput.value = endTime;
+
+				let bodyWeight = button.getAttribute("data-workout-bodyWeight");
+				let workoutBodyWeightInput = document.getElementById("editWorkoutBodyWeight");
+				workoutBodyWeightInput.value = bodyWeight;
+
+				let notes = button.getAttribute("data-workout-notes");
+				let workoutNotesInput = document.getElementById("editWorkoutNotes");
+				workoutNotesInput.value = notes;
+
+
+			});
+
+		});
+
+		closeEditWorkoutModal.addEventListener("click", function () {
+			editWorkoutModal.style.display = 'none';
+
+		});
+
+
+
+
 		window.addEventListener("click", function (e) {
 			if (e.target == exerciseModal) {
 				exerciseModal.style.display = 'block';
 			} else if (e.target == workoutModal) {
 				workoutModal.style.display = 'none';
+			} else if (e.target == editWorkoutModal) {
+				editWorkoutModal.style.display = 'none';
 			}
 
 		});
-		
+
 		//populate exercise drop down
-		
+
 
 
 	</script>

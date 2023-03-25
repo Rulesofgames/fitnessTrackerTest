@@ -69,8 +69,11 @@ public class WorkoutController {
 	@PostMapping("saveWorkout")
 	public String saveWorkout(@ModelAttribute("workout")Workout workout,ModelMap modelmap,@RequestParam("userId") Integer id) {
 		LOGGER.info("Inside saveWorkout");
-		workout.setUser(userRepo.findById(id).get());
-		Workout savedWorkout=workoutRepo.save(workout);
+		
+		//saving all workouts to user id 1
+		workout.setUser(userRepo.findById(1).get());
+		
+		Workout savedWorkout=fitnessTrackerServiceImpl.saveWorkout(workout);
 		
 		/*you are repeating code..see if u can avoid it
 		modelmap.addAttribute("userId",id);
@@ -80,6 +83,12 @@ public class WorkoutController {
 		
 	}
 	
+	@PostMapping("saveEditWorkout")
+	public String saveEditWorkout(@ModelAttribute("workout")Workout workout) {
+		
+		Workout savedWorkout=fitnessTrackerServiceImpl.saveWorkout(workout);
+		return "redirect:addWorkout";
+	}
 	@PostMapping("saveSet")
 	public String saveSet(@ModelAttribute("Sets")Sets sets,ModelMap modelmap,@RequestParam("exerciseId")Integer exerciseId,@RequestParam("workoutId")Integer workoutId) {
 		
@@ -90,6 +99,28 @@ public class WorkoutController {
 		setsRepo.save(sets);
 		
 		return "redirect:addWorkout";
+	}
+	
+	@RequestMapping("viewWorkoutLog")
+    public String viewWorkoutLog(@RequestParam("id") Integer workoutId,ModelMap modelmap) {
+		
+		
+		modelmap.addAttribute("setsList",setsRepo.findAllByWorkoutId(workoutId));
+		return "displayWorkoutLog";
+	}
+	
+	@RequestMapping("deleteWorkout")
+	public String deleteWorkout(@RequestParam("id") Integer workoutId) {
+		workoutRepo.deleteById(workoutId);
+		
+		return "redirect:addWorkout";
+	}
+	
+	@RequestMapping("deleteSet")
+	public String deleteSet(@RequestParam("id") Integer setId){
+		int workoutId=setsRepo.findById(setId).get().getWorkout().getId();
+		setsRepo.deleteById(setId);
+		return "redirect:viewWorkoutLog?id="+workoutId;
 	}
 	
 	
