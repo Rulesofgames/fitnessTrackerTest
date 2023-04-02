@@ -5,6 +5,10 @@ import java.util.Set;
 
 import org.hibernate.annotations.CascadeType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,9 +40,11 @@ public class Sets {
 	private String notes;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="workout_id")
+	 @JsonBackReference
 	private Workout workout;
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="exercise_id")
+	@JsonManagedReference
 	private Exercise exercise;
 	
 

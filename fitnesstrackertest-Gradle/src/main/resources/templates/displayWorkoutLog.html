@@ -2,47 +2,442 @@
 
 <head>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0">
- 
 
-    <title></title>
-    <style>
-		#mainTable{
-			border:1px solid;
-			width:100%;
+
+	<title></title>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+			font-family: 'Oswald', sans-serif;
+
+
 		}
-        
-    </style>
+
+		#headerBlock {
+			display: flex;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 100;
+			height: 35px;
+			background-color: #eaeaea;
+			justify-content: space-around;
+		}
+
+		#NavigationBlock {
+			display: flex;
+			justify-content: space-around;
+
+		}
+
+		#mainBlock {
+			margin-top: 60px;
+		}
+
+		#mainTable {
+			border: 1px solid black;
+			width: 100%;
+			border-collapse: collapse;
+			text-align: center;
+			vertical-align: middle;
+		}
+
+		#whole-editset-modal-window,
+		#whole-deleteSet-modal-window,
+		#whole-exercise-modal-window {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.7);
+		}
+
+		.editSetModal,
+		.deleteSetModal,
+		.addExerciseModal {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 40%;
+			height: 55%;
+			border: 1px solid black;
+			border-radius: 3px;
+			box-shadow: 0px 0 px 2px;
+			background-color: #fff;
+		}
+
+		.modalHeader {
+
+			background: #fe7250;
+			text-align: center;
+			text-transform: uppercase;
+			padding: 5px 5px;
+
+		}
+
+		#close-editset-modal,
+		#close-deleteset-modal,
+		#close-exercise-modal {
+
+			font-size: 50px;
+			float: right;
+		}
+
+		#close-editset-modal:hover,
+		#close-deleteset-modal:hover,
+		#close-exercise-modal:hover {
+			cursor: pointer;
+			color: #333;
+		}
+
+		.buttnGrp {
+			margin: 11px auto;
+		}
+
+		.buttnGrp input[type=submit],
+		#cancelDeleteSet {
+			background: #fe7250;
+			color: #fff;
+			height: 45px;
+			width: 130px;
+			border-radius: 20px;
+			font-size: 15px;
+			padding: 2px 6px;
+			border: 0;
+			outline: 0;
+			cursor: pointer;
+
+			transition: all ease-in-out 1s;
+		}
+	</style>
 </head>
 
 <body>
-	
-	<table id="mainTable">
-		<tr>
-			<th>Exercise</th>
-			<th>SetId</th>
-			<th>Weight</th>
-			<th>Reps</th>
-			<th>Minutes</th>
-			<th>Distance</th>
-			<th>Kcal</th>
-			<th>Notes</th>
-		</tr>
-		<tr th:each="set:${setsList}">
-			<td th:text="${set.exercise.exerciseName}"></td>
-			<td th:text="${set.id}"></td>
-			<td th:text="${set.weight}"></td>
-			<td th:text="${set.reps}"></td>
-			<td th:text="${set.minutes}"></td>
-			<td th:text="${set.distance}"></td>
-			<td th:text="${set.Kcal}"></td>
-			<td th:text="${set.notes}"></td>
-			<td><a th:href="@{'editSet?id='+${set.id}}"><button type="button">Edit</button></a></td>
-			<td><a th:href="@{'deleteSet?id='+${set.id}}"><button type="button">Delete</button></a></td>
-			
-		</tr>
-		
-	</table>
-   
+	<div id="headerBlock">
+		<div>MYFITNESSBUDDY</div>
+		<div id="NavigationBlock">
+			<a href="">Summary</a>
+			<a th:href="@{addWorkout}">Add Workout</a>
+			<a th:href="@{statistics}">Statistics</a>
+			<a href="">Profile</a>
+			<a href="">Log out</a>
+		</div>
+	</div>
+	<div id="mainBlock">
+		<!--Edit set modal window-->
+		<div id="whole-editset-modal-window">
+			<div class="editSetModal">
+				<div class="modalContent">
+					<div class="modalHeader">
+						<span id="close-editset-modal">&times;</span>
+						<h2 id="">Edit Set</h2>
+					</div>
+					<div id="">
+						<form action="saveEditSet" method="post">
+							
+							Select Exercise:<select id="editSetExerciseName" name="exerciseId">
+								<option th:each="exercise:${exerciseList}" th:value="${exercise.id}" th:text="${exercise.exerciseName}" th:selected="${exercise.id == selectedExerciseId}"></option>
+							</select>
+							<div class="input-field">
+								<label for="weight">Weight:</label>
+								<input type="number" id="editSetWeight" name="weight" required>
+							</div>
+
+							<div class="input-field">
+								<label for="reps">Reps:</label>
+								<input type="number" id="editSetReps" name="reps" required>
+							</div>
+
+							<div class="input-field">
+								<label for="minutes">Minutes:</label>
+								<input type="number" id="editSetMinutes" name="minutes" required>
+							</div>
+
+							<div class="input-field">
+								<label for="distance">Distance:</label>
+								<input type="number" id="editSetDistance" name="distance" required>
+							</div>
+							<div class="input-field">
+								<label for="kcal">Kcal:</label>
+								<input type="number" id="editSetKcal" name="kcal" required>
+							</div>
+
+							<div class="input-field">
+								<label for="notes">Notes:</label>
+								<textarea id="editSetNotes" name="notes"></textarea>
+							</div>
+							<input type="hidden" id="editSetId" name="id">
+							<input type="hidden" id="editSetexerciseId" name="exerciseId">
+							<input type="hidden" id="editSetworkoutId" name="workoutId">
+							<div class="buttnGrp">
+								<input type="Submit" value="Submit">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+<!-- delete set modal window-->
+		<div id="whole-deleteSet-modal-window">
+			<div class="deleteSetModal">
+				<div class="modalContent">
+					<div class="modalHeader">
+						<span id="close-deleteset-modal">&times;</span>
+						<h2 id="">Delete Set</h2>
+					</div>
+					<div id="">
+						<form action="deleteSet" method="post">
+							<div>
+								<p>Are you sure you want to delete this item?</p>
+							</div>
+							<input type="hidden" id="deleteSetId" name="setId">
+							<input type="hidden" id="deleteSetworkoutId" name="workoutId">
+							<div class="buttnGrp">
+								<button type="button" id="cancelDeleteSet">Cancel</button>
+								<input type="Submit" value="Delete">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--Add Exercise-->
+		<div id="whole-exercise-modal-window">
+			<div class="addExerciseModal">
+				<div class="modalContent">
+					<div class="modalHeader">
+						<span id="close-exercise-modal">&times;</span>
+						<h2 id="">Add Exercise</h2>
+					</div>
+					<div id="">
+						<form action="saveSet" method="post">
+							Select Exercise:<select  name="exerciseId">
+								<option value="">Select Exercise</option>
+								<option th:each="exercise:${exerciseList}" th:value="${exercise.id}"
+									th:text="${exercise.exerciseName}"></option>
+							</select>
+							<div class="input-field">
+								<label for="weight">Weight:</label>
+								<input type="number" id="weight" name="weight" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Reps:</label>
+								<input type="number" id="reps" name="reps" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Minutes:</label>
+								<input type="number" id="minutes" name="minutes" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Distance:</label>
+								<input type="number" id="distance" name="distance" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Kcal:</label>
+								<input type="number" id="Kcal" name="Kcal" required>
+							</div>
+							<div class="input-field">
+								<label for="notes">Notes:</label>
+								<textarea id="notes" name="notes"></textarea>
+							</div>
+
+
+							<input type="hidden" id="addExerciseworkoutId" name="workoutId">
+
+							<div class="buttnGrp">
+								<input type="Submit" value="Submit">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<button type="button" id="addExerciseButton" th:attr="data-workout-id=${workoutId}">Log
+			Exercise</button>
+		<table id="mainTable">
+			<tr>
+				<th>Exercise</th>
+				<th>SetId</th>
+				<th>Weight</th>
+				<th>Reps</th>
+				<th>Minutes</th>
+				<th>Distance</th>
+				<th>Kcal</th>
+				<th>Notes</th>
+			</tr>
+			<tr th:each="set:${setsList}">
+				<td th:text="${set.exercise.exerciseName}"></td>
+				<td th:text="${set.id}"></td>
+				<td th:text="${set.weight}"></td>
+				<td th:text="${set.reps}"></td>
+				<td th:text="${set.minutes}"></td>
+				<td th:text="${set.distance}"></td>
+				<td th:text="${set.Kcal}"></td>
+				<td th:text="${set.notes}"></td>
+				<td><button type="button" class="editSetButton" th:attr="data-set-exercise=${set.exercise.exerciseName},data-set-exerciseId=${set.exercise.id},data-set-id=${set.id},data-set-weight=${set.weight},data-set-reps=${set.reps},
+			data-set-minutes=${set.minutes},data-set-distance=${set.distance},data-set-kcal=${set.Kcal},data-set-notes=${set.notes}
+			,data-set-exerciseid=${set.exercise.id},data-set-workoutid=${set.workout.id}">Edit</button></td>
+				<td><button type="button" class="deleteSetButton"
+						th:attr="data-set-id=${set.id},data-set-weight=${set.weight},data-set-reps=${set.reps},
+			data-set-minutes=${set.minutes},data-set-distance=${set.distance},data-set-kcal=${set.Kcal},data-set-notes=${set.notes},data-set-workoutid=${set.workout.id}">Delete</button>
+				</td>
+
+
+
+			</tr>
+
+		</table>
+	</div>
+
+	<script>
+		//Add exercise
+		let exerciseModal = document.getElementById("whole-exercise-modal-window");
+		let addExerciseButton = document.getElementById("addExerciseButton");
+		let closeExerciseModal = document.getElementById("close-exercise-modal");
+
+
+
+		addExerciseButton.addEventListener("click", function () {
+			console.log("Inside click button event");
+			exerciseModal.style.display = "block";
+			let workoutId = addExerciseButton.getAttribute("data-workout-id");
+			console.log("selected workout Id is" + workoutId);
+			let workoutInputId = document.getElementById("addExerciseworkoutId");
+			workoutInputId.value = Number(workoutId);
+
+		});
+
+
+
+		closeExerciseModal.addEventListener("click", function () {
+			exerciseModal.style.display = 'none';
+
+		});
+
+		//edit set
+		let editSetModal = document.getElementById("whole-editset-modal-window");
+		let editSetButtons = document.querySelectorAll(".editSetButton");
+		let closeEditSetModal = document.getElementById("close-editset-modal");
+
+		editSetButtons.forEach(function (button) {
+
+			button.addEventListener("click", function () {
+				console.log("Inside editset button event");
+				editSetModal.style.display = "block";
+				
+				let exercise=button.getAttribute("data-set-exerciseId");
+				console.log("Exercise selected for edit is"+exercise);
+				let exerciseDropdown=document.getElementById("editSetExerciseName");
+				exerciseDropdown.value=Number(exercise);
+
+				let settId = button.getAttribute("data-set-id");
+				console.log("selected set Id is" + settId);
+				let setInputId = document.getElementById("editSetId");
+				setInputId.value = Number(settId);
+
+
+				let exerciseId = button.getAttribute("data-set-exerciseid");
+				let setExerciseInputId = document.getElementById("editSetexerciseId");
+				setExerciseInputId.value = Number(exerciseId);
+
+				let workoutId = button.getAttribute("data-set-workoutid");
+				let setWorkoutInputId = document.getElementById("editSetworkoutId");
+				setWorkoutInputId.value = Number(workoutId);
+
+				let weight = button.getAttribute("data-set-weight");
+				let setWeightInput = document.getElementById("editSetWeight");
+				setWeightInput.value = weight;
+
+				let reps = button.getAttribute("data-set-reps");
+				let setRepsInput = document.getElementById("editSetReps");
+				setRepsInput.value = reps;
+
+				let minutes = button.getAttribute("data-set-minutes");
+				let setMinutesInput = document.getElementById("editSetMinutes");
+				setMinutesInput.value = minutes;
+
+				let distance = button.getAttribute("data-set-distance");
+				let setDistanceInput = document.getElementById("editSetDistance");
+				setDistanceInput.value = distance;
+
+				let kcal = button.getAttribute("data-set-kcal");
+				let setKcalInput = document.getElementById("editSetKcal");
+				setKcalInput.value = kcal;
+
+				let notes = button.getAttribute("data-set-notes");
+				let setNotesInput = document.getElementById("editSetNotes");
+				setNotesInput.value = notes;
+
+
+
+			});
+
+		});
+
+		closeEditSetModal.addEventListener("click", function () {
+			editSetModal.style.display = "none";
+
+		});
+
+		//delete set
+		let deleteSetModal = document.getElementById("whole-deleteSet-modal-window");
+		let deleteSetButtons = document.querySelectorAll(".deleteSetButton");
+		let closeDeleteSetModal = document.getElementById("close-deleteset-modal");
+		let cancelDeleteSetModal = document.getElementById("cancelDeleteSet");
+
+		deleteSetButtons.forEach(function (button) {
+
+			button.addEventListener("click", function () {
+				console.log("Inside editset button event");
+				deleteSetModal.style.display = "block";
+
+				let settId = button.getAttribute("data-set-id");
+				console.log("selected set Id is" + settId);
+				let setInputId = document.getElementById("deleteSetId");
+				setInputId.value = Number(settId);
+
+
+				let workoutId = button.getAttribute("data-set-workoutid");
+				let setWorkoutInputId = document.getElementById("deleteSetworkoutId");
+				setWorkoutInputId.value = Number(workoutId);
+
+
+			});
+
+		});
+
+		closeDeleteSetModal.addEventListener("click", function () {
+			deleteSetModal.style.display = "none";
+
+		});
+
+		cancelDeleteSetModal.addEventListener('click', function () {
+
+			deleteSetModal.style.display = "none";
+		});
+		window.addEventListener("click", function (e) {
+			if (e.target == editSetModal) {
+				editSetModal.style.display = "none";
+			} else if (e.target == deleteSetModal) {
+				deleteSetModal.style.display = "none";
+			}
+
+		});
+
+
+	</script>
+
+
 </body>
 
 </html>

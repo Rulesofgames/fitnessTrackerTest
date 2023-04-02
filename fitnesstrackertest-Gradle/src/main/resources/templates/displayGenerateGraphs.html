@@ -1,0 +1,174 @@
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+
+	<title>Generate Graphs</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+			font-family: 'Oswald', sans-serif;
+
+		}
+
+		#headerBlock {
+			display: flex;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 100;
+			height: 35px;
+			background-color: #eaeaea;
+			justify-content: space-around;
+		}
+
+		#NavigationBlock {
+			display: flex;
+			justify-content: space-around;
+
+		}
+
+		#mainBlock {
+
+			margin-top: 50px;
+		}
+
+		#graphContainer {
+			margin: 40px auto;
+			width: 60%;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="headerBlock">
+		<div>MYFITNESSBUDDY</div>
+		<div id="NavigationBlock">
+			<a href="">Summary</a>
+			<a th:href="@{'addWorkout?id='+${userId}}">Add Workout</a>
+			<a th:href="@{addSets}">Add Sets</a>
+			<a th:href="@{statistics}">Statistics</a>
+			<a href="">Profile</a>
+			<a href="">Log out</a>
+		</div>
+	</div>
+
+	<div id="mainBlock">
+		<select name="metric" id="metric">
+			<option value="duration">Duration</option>
+			<option value="abs">Abs</option>
+			<option value="cardio">Cardio</option>
+		</select>
+		<select name="timeframe" id="timeframe">
+			<option value="1">Last 24 hours</option>
+			<option value="7">Last 7 days</option>
+			<option value="30">Last 30 days</option>
+		</select>
+		<input type="Submit" value="Generate" id="generateGraphButton">
+
+		<div id="graphContainer"></div>
+	</div>
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+	<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script th:inline="javascript">
+		$('#generateGraphButton').on('click', function () {
+			console.log("Inside generate graph click event")
+			let metric = $('#metric').val();
+			console.log("Metric is " + metric);
+			let timeframe = $('#timeframe').val();
+			console.log("Timeframe is " + timeframe);
+			$.ajax({
+				url: 'data',
+				success: function (response) {
+					console.log("Inside response from controller");
+					console.log(response);
+
+                  
+					generateGraph(response);
+
+				},
+
+				error: function (xhr, status, error) {
+					console.log("Error: " + error);
+					console.log("Status: " + status);
+				}
+
+
+			}
+
+			);
+
+		});
+
+		function generateGraph(responseMap) {
+        
+
+			console.log("Inside highchart function");
+
+
+			Highcharts.chart('graphContainer', {
+				chart: {
+					type: 'line',
+					zoomType: 'xy'
+				},
+				credits: {
+					enabled: false
+				},
+				title: {
+					text: 'Technology Popularity In India'
+				},
+				subtitle: {
+					text: 'All Details is not true its a dummy Map'
+				},
+			xAxis: {
+					categories:[],
+					crosshair: true
+				},
+				yAxis: {
+					min: 0,
+					max: 100,
+					title: {
+						text: 'Technology rating [in %]'
+					}
+				},
+				tooltip: {
+					borderColor: '#fe7250',
+					borderRadius: 20,
+					headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+					pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+						'<td style="padding:0"><b>{point.y} </b></td></tr>',
+					footerFormat: '</table>',
+					shared: true,
+					useHTML: true
+				},
+				plotOptions: {
+					column: {
+						pointPadding: 0.2,
+						borderWidth: 0,
+						color: '#fe7250'
+					}
+				},
+				series: [{
+					name: 'Technology',
+					data: []
+				}]
+					
+			});
+
+		}
+
+	</script>
+
+
+</body>
+
+
+</html>

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +28,9 @@ public class UserController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-	UserRepository userRepo;
 	
+	UserRepository userRepo;
+
 	@Autowired
 	EmailUtil emailUtil;
 
@@ -39,6 +41,8 @@ public class UserController {
 	public UserController(UserRepository userRepo) {
 		this.userRepo = userRepo;
 	}
+	
+
 
 	@RequestMapping("SignUpPage")
 	public String displaySignUpPage() {
@@ -54,17 +58,18 @@ public class UserController {
 	}
 
 	@PostMapping("registerUser")
-	public String registerUser(@ModelAttribute("user") User user,ModelMap modelmap) {
+	public String registerUser(@ModelAttribute("user") User user, ModelMap modelmap) {
 
 		LOGGER.info("Inside Register User" + user);
 		LOGGER.info("date is" + user.getDOB());
 		User savedUser = userRepo.save(user);
 		if (savedUser == null) {
-			modelmap.addAttribute("msg","User registration failed.Please try again");
-			return "displaySignUpPage"; 
+			modelmap.addAttribute("msg", "User registration failed.Please try again");
+			return "displaySignUpPage";
 		} else {
-			modelmap.addAttribute("msg","User registration success.Please log in to continue");
-			emailUtil.sendEmail(user.getEmail(),"Start your fitness journey", user.getFirstName()+", Welcome to MYFITNESSBUDYY");
+			modelmap.addAttribute("msg", "User registration success.Please log in to continue");
+			emailUtil.sendEmail(user.getEmail(), "Start your fitness journey",
+					user.getFirstName() + ", Welcome to MYFITNESSBUDYY");
 			LOGGER.info("user saved successfully");
 			return "displaySignUpPage";
 		}
@@ -91,13 +96,15 @@ public class UserController {
 	public String checkLogIn(@RequestParam("email") String email, @RequestParam("password") String password,
 			ModelMap modelmap) {
 		User user = userRepo.findByEmail(email);
-		int id = user.getId();
-		modelmap.addAttribute("userId", id);
+
 		if (user == null || !user.getPassword().equals(password)) {
 			modelmap.addAttribute("msg",
 					"Username or password is incorrect.Please enter correct username and password");
+
 			return "displaySignInPage";
 		} else {
+			int id = user.getId();
+			modelmap.addAttribute("userId", id);
 			return "displayHomePage";
 		}
 

@@ -4,6 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,9 +43,11 @@ public class Workout {
 	private String workoutType;
 	@ManyToOne
 	@JoinColumn(name="user_id")
+	 @JsonBackReference
 	private User user;
-	
 	@OneToMany(mappedBy="workout",fetch=FetchType.EAGER,cascade=CascadeType.ALL)
+	@JsonManagedReference
 	private Set<Sets> sets;
+	
 
 }

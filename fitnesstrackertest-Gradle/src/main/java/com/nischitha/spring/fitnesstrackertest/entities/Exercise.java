@@ -3,6 +3,10 @@ package com.nischitha.spring.fitnesstrackertest.entities;
 import java.util.Date;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +31,7 @@ public class Exercise {
 	@Column(name="exercise_name")
 	private String exerciseName;
 	@OneToMany(mappedBy="exercise")
+	 @JsonBackReference
 	private Set<Sets> sets;
 
 }

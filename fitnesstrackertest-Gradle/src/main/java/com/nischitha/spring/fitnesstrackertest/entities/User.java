@@ -1,9 +1,12 @@
 package com.nischitha.spring.fitnesstrackertest.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,15 +35,16 @@ public class User {
 	private String firstName;
 	@Column(name="lastname")
 	private String lastName;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@Temporal(TemporalType.DATE)
+	/*@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Temporal(TemporalType.DATE)*/
 	@Column(name="birthdate")
-	private Date DOB;
+	private LocalDate DOB;
 	private String address;
 	private int pincode;
 	private String country;
 	private String gender;
 	@OneToMany(mappedBy="user")
+	@JsonManagedReference
 	private Set<Workout> workout;
 	
 }
