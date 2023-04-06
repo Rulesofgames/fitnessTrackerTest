@@ -1,10 +1,12 @@
 package com.nischitha.spring.fitnesstrackertest.services;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,13 +74,13 @@ public class FitnessTrackerServiceImpl implements FitnessTrackerService {
 		//calculate Type of workout
 		String workoutType="";
 		int hour=workout.getStartTime().getHour();
-		if(hour>=5&&hour<12) {
+		if(hour>=5&&hour<10) {
 			workoutType="Morning";
-		}else if(hour>=12&&hour<16) {
+		}else if(hour>=10&&hour<13) {
 			workoutType="MidDay";
-		}else if(hour>=16&&hour<18) {
+		}else if(hour>=13&&hour<17) {
 			workoutType="Afternoon";
-		}else if(hour>=18&&hour<21) {
+		}else if(hour>=17&&hour<20) {
 			workoutType="Evening";
 		}else {
 			workoutType="Night";
@@ -86,8 +88,11 @@ public class FitnessTrackerServiceImpl implements FitnessTrackerService {
 		workout.setWorkoutType(workoutType);
 		
 		//calculate duration of workout
-		Duration duration=Duration.between(workout.getStartTime(), workout.getEndTime());
-		workout.setDuration((int)duration.toMinutes());
+		
+		long millis=Duration.between(workout.getStartTime(), workout.getEndTime()).toMillis();
+		
+		int duration=(int) TimeUnit.MILLISECONDS.toMinutes(millis);
+		workout.setDuration(duration);
 		
 		return workoutRepo.save(workout);
 	}

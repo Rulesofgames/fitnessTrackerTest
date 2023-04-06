@@ -87,7 +87,6 @@ public class WorkoutController {
 
 	@PostMapping("saveEditWorkout")
 	public String saveEditWorkout(@ModelAttribute("workout") Workout workout) {
-
 		Workout savedWorkout = fitnessTrackerServiceImpl.saveWorkout(workout);
 		return "redirect:addWorkout";
 	}

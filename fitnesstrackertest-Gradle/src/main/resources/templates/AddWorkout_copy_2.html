@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+	<title>Home Page</title>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+			font-family: 'Oswald', sans-serif;
+			box-sizing: border-box;
+
+		}
+
+		#headerBlock {
+			display: flex;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 100;
+			height: 35px;
+			background-color: #eaeaea;
+			justify-content: space-around;
+		}
+
+		#NavigationBlock {
+			display: flex;
+			justify-content: space-around;
+
+		}
+
+		#mainBlock {
+			margin-top: 60px;
+		}
+
+
+		#whole-workout-modal-window,
+		#whole-exercise-modal-window,
+		#whole-editWorkout-modal-window,
+		#whole-deleteWorkout-modal-window {
+
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.7);
+
+		}
+
+		.addExerciseModal,
+		.addWorkoutModal,
+		.editWorkoutModal,
+		.deleteWorkoutModal {
+
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 40%;
+			height: 55%;
+			border: 1px solid black;
+			border-radius: 3px;
+			box-shadow: 0px 0 px 2px;
+			background-color: #fff;
+		}
+
+		.modalHeader {
+
+			background: #fe7250;
+			text-align: center;
+			text-transform: uppercase;
+			padding: 5px 5px;
+
+		}
+
+		.input-field {
+			background: #eaeaea;
+		}
+
+		#close-exercise-modal,
+		#close-workout-modal,
+		#close-deleteworkout-modal {
+			font-size: 50px;
+			float: right;
+		}
+
+		#close-exercise-modal:hover,
+		#close-workout-modal:hover {
+			cursor: pointer;
+			color: #333;
+		}
+
+		.buttnGrp {
+			margin: 11px auto;
+		}
+
+		.buttnGrp input[type=submit],#cancelDeleteWorkout {
+			background: #fe7250;
+			color: #fff;
+			height: 45px;
+			width: 130px;
+			border-radius: 20px;
+			font-size: 15px;
+			padding: 2px 6px;
+			border: 0;
+			outline: 0;
+			cursor: pointer;
+
+			transition: all ease-in-out 1s;
+		}
+
+		#mainTable {
+			border: 1px solid black;
+			width: 100%;
+			border-collapse: collapse;
+			text-align: center;
+			vertical-align: middle;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="headerBlock">
+		<div>MYFITNESSBUDDY</div>
+		<div id="NavigationBlock">
+			<a href="">Summary</a>
+			<a th:href="@{addWorkout}">Add Workout</a>
+			<a th:href="@{statistics}">Statistics</a>
+			<a href="">Profile</a>
+			<a href="">Log out</a>
+		</div>
+	</div>
+	<div id="mainBlock">
+		<div id="whole-workout-modal-window">
+			<div class="addWorkoutModal">
+				<div class="modalContent">
+					<div class="modalHeader">
+						<span id="close-workout-modal">&times;</span>
+						<h2 id="">Add Workout</h2>
+					</div>
+					<div id="">
+						<form action="saveWorkout" method="post">
+							<div class="input-field">
+								<label for="date">Date:</label>
+								<input type="date" id="date" name="date" required>
+							</div>
+
+							<div class="input-field">
+								<label for="start-time">Start Time:</label>
+								<input type="datetime-local" id="startTime" name="startTime" required>
+							</div>
+
+							<div class="input-field">
+								<label for="end-time">End Time:</label>
+								<input type="datetime-local" id="endTime" name="endTime" required>
+							</div>
+
+							<div class="input-field">
+								<label for="bodyWeight">BodyWeight</label>
+								<input type="number" id="bodyWeight" name="bodyWeight" required>
+							</div>
+
+							<div class="input-field">
+								<label for="notes">Notes:</label>
+								<textarea id="notes" name="notes"></textarea>
+							</div>
+							<input type="hidden" th:value="${userId}" name="userId">
+							<div class="buttnGrp">
+								<input type="Submit" value="Submit">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+<!--Add Exercise-->
+		<div id="whole-exercise-modal-window">
+			<div class="addExerciseModal">
+				<div class="modalContent">
+					<div class="modalHeader">
+						<span id="close-exercise-modal">&times;</span>
+						<h2 id="">Add Exercise</h2>
+					</div>
+					<div id="">
+						<form action="saveSet" method="post">
+							Select Exercise:<select name="exerciseId">
+								<option value="">Select Exercise</option>
+								<option th:each="exercise:${exerciseList}" th:value="${exercise.id}"
+									th:text="${exercise.exerciseName}"></option>
+							</select>
+							<div class="input-field">
+								<label for="weight">Weight:</label>
+								<input type="number" id="weight" name="weight" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Reps:</label>
+								<input type="number" id="reps" name="reps" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Minutes:</label>
+								<input type="number" id="minutes" name="minutes" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Distance:</label>
+								<input type="number" id="distance" name="distance" required>
+							</div>
+							<div class="input-field">
+								<label for="reps">Kcal:</label>
+								<input type="number" id="Kcal" name="Kcal" required>
+							</div>
+							<div class="input-field">
+								<label for="notes">Notes:</label>
+								<textarea id="notes" name="notes"></textarea>
+							</div>
+
+
+							<input type="hidden" name="workoutId">
+
+							<div class="buttnGrp">
+								<input type="Submit" value="Submit">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+<!--edit workout-->
+		<div id="whole-editWorkout-modal-window">
+			<div class="editWorkoutModal">
+				<div class="modalContent">
+					<div class="modalHeader">
+						<span id="close-editworkout-modal">&times;</span>
+						<h2 id="">Edit Workout</h2>
+					</div>
+					<div id="formBox">
+						<form action="saveEditWorkout" method="post">
+							<div class="input-field">
+								<label for="date">Date:</label>
+								<input type="date" id="editWorkoutDate" name="date" required>
+							</div>
+
+							<div class="input-field">
+								<label for="start-time">Start Time:</label>
+								<input type="time" id="editWorkoutStartTime" name="startTime" required>
+							</div>
+
+							<div class="input-field">
+								<label for="end-time">End Time:</label>
+								<input type="time" id="editWorkoutEndTime" name="endTime" required>
+							</div>
+
+							<div class="input-field">
+								<label for="bodyWeight">BodyWeight</label>
+								<input type="number" id="editWorkoutBodyWeight" name="bodyWeight" required>
+							</div>
+
+							<div class="input-field">
+								<label for="notes">Notes:</label>
+								<textarea id="editWorkoutNotes" name="notes"></textarea>
+							</div>
+							<input type="hidden" id="editWorkoutId" name="id">
+							<div class="buttnGrp">
+								<input type="Submit" value="Submit">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+//delete workout
+		<div id="whole-deleteWorkout-modal-window">
+			<div class="deleteWorkoutModal">
+				<div class="modalContent">
+					<div class="modalHeader">
+						<span id="close-deleteworkout-modal">&times;</span>
+						<h2 id="">Delete Workout</h2>
+					</div>
+					<div id="">
+						<form action="deleteWorkout" method="post">
+							<div>
+								<p>Are you sure you want to delete this item?</p>
+							</div>
+							<input type="hidden" id="deleteWorkoutId" name="id">
+							<div class="buttnGrp">
+								<button type="button" id="cancelDeleteWorkout">Cancel</button>
+								<input type="Submit" value="Delete">
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<table id="mainTable">
+			<tr>
+				<th>WorkoutId</th>
+				<th>WorkoutDate</th>
+				<th>WorkoutType</th>
+				<th>Duration(Minutes)</th>
+				<th>StartTime</th>
+				<th>End Time</th>
+				<th>BodyWeight(lbs)</th>
+				<th>Notes</th>
+				<th>Add Exercise</th>
+				<th>Workout Log</th>
+				<th>Edit</th>
+				<th>Delete</th>
+
+			</tr>
+			<tr th:each="workout:${workoutList}">
+				<td th:text="${workout.id}"></td>
+				<td th:text="${workout.date}"></td>
+				<td th:text="${workout.workoutType}"></td>
+				<td th:text="${workout.duration}"></td>
+				<td th:text="${workout.startTime}"></td>
+				<td th:text="${workout.endTime}"></td>
+				<td th:text="${workout.bodyWeight}"></td>
+				<td th:text="${workout.notes}"></td>
+				<td><button type="button" class="addExerciseButton" th:attr="data-workout-id=${workout.id}">Log
+						Exercise</button></td>
+				<td><a th:href="@{'/viewWorkoutLog?id='+${workout.id}}"><button type="button"
+							class="ViewWorkoutLogButton">View Workout
+							Log</button></a></td>
+				<td><button type="button" class="editWorkoutButton"
+						th:attr="data-workout-id=${workout.id},data-workout-date=${workout.date},data-workout-startTime=${workout.startTime},data-workout-endTime=${workout.endTime},data-workout-bodyWeight=${workout.bodyWeight},data-workout-notes=${workout.notes}">Edit</button>
+				</td>
+				<td><button type="button" class="deleteButton" th:attr="data-workout-id=${workout.id}">Delete</button>
+				</td>
+			</tr>
+
+		</table>
+		<button type="button" id="AddWorkoutBtn">Add Workout</button>
+
+	</div>
+	<script>
+		console.log("Inside script");
+		//Adding workout
+		let workoutModal = document.getElementById("whole-workout-modal-window");
+		let openWorkoutBtn = document.getElementById("AddWorkoutBtn");
+		let closeWorkoutModal = document.getElementById("close-workout-modal");
+
+		openWorkoutBtn.addEventListener("click", function (event) {
+
+			workoutModal.style.display = 'block';
+
+
+		});
+
+		closeWorkoutModal.addEventListener("click", function () {
+			workoutModal.style.display = 'none';
+
+		});
+
+
+		//Adding exercise
+		let exerciseModal = document.getElementById("whole-exercise-modal-window");
+		let addExerciseButtons = document.querySelectorAll(".addExerciseButton");
+		let closeExerciseModal = document.getElementById("close-exercise-modal");
+
+		addExerciseButtons.forEach(function (button) {
+
+			button.addEventListener("click", function () {
+				console.log("Inside click button event");
+				exerciseModal.style.display = "block";
+				let workoutId = button.getAttribute("data-workout-id");
+				console.log("selected workout Id is" + workoutId);
+				let workoutInputId = document.querySelector('input[name="workoutId"]');
+				workoutInputId.value = Number(workoutId);
+
+			});
+
+		});
+
+		closeExerciseModal.addEventListener("click", function () {
+			exerciseModal.style.display = 'none';
+
+		});
+
+		//Edit workout info
+		let editWorkoutModal = document.getElementById("whole-editWorkout-modal-window");
+		let editWorkoutButtons = document.querySelectorAll(".editWorkoutButton");
+		let closeEditWorkoutModal = document.getElementById("close-editworkout-modal");
+
+		editWorkoutButtons.forEach(function (button) {
+
+			button.addEventListener("click", function () {
+				console.log("Inside edit button event");
+				editWorkoutModal.style.display = "block";
+				let workoutId = button.getAttribute("data-workout-id");
+				console.log("selected workout Id is" + workoutId);
+				let workoutInputId = document.getElementById("editWorkoutId");
+				workoutInputId.value = Number(workoutId);
+
+				let date = button.getAttribute("data-workout-date");
+				let workoutDateInput = document.getElementById("editWorkoutDate");
+				workoutDateInput.value = date;
+
+				let startTime = button.getAttribute("data-workout-startTime");
+				let workoutStartTimeInput = document.getElementById("editWorkoutStartTime");
+				workoutStartTimeInput.value = startTime;
+
+				let endTime = button.getAttribute("data-workout-endTime");
+				let workoutEndTimeInput = document.getElementById("editWorkoutEndTime");
+				workoutEndTimeInput.value = endTime;
+
+				let bodyWeight = button.getAttribute("data-workout-bodyWeight");
+				let workoutBodyWeightInput = document.getElementById("editWorkoutBodyWeight");
+				workoutBodyWeightInput.value = bodyWeight;
+
+				let notes = button.getAttribute("data-workout-notes");
+				let workoutNotesInput = document.getElementById("editWorkoutNotes");
+				workoutNotesInput.value = notes;
+
+
+			});
+
+		});
+
+		closeEditWorkoutModal.addEventListener("click", function () {
+			editWorkoutModal.style.display = 'none';
+
+		});
+
+
+
+		//Delete workout
+		let deleteWorkoutModal = document.getElementById("whole-deleteWorkout-modal-window");
+		let deleteWorkoutButtons = document.querySelectorAll(".deleteButton");
+		let closeDeleteWorkoutModal = document.getElementById("close-deleteworkout-modal");
+		let cancelDeleteWorkout = document.getElementById("cancelDeleteWorkout");
+
+		deleteWorkoutButtons.forEach(function (button) {
+
+			button.addEventListener("click", function () {
+				console.log("Inside delete workout button event");
+				deleteWorkoutModal.style.display = "block";
+				let workoutId = button.getAttribute("data-workout-id");
+				console.log("selected workout Id is" + workoutId);
+				let workoutInputId = document.getElementById("deleteWorkoutId");
+				workoutInputId.value = Number(workoutId);
+
+
+			});
+
+		});
+
+		closeDeleteWorkoutModal.addEventListener("click", function () {
+			deleteWorkoutModal.style.display = 'none';
+
+		});
+
+		cancelDeleteWorkout.addEventListener('click', function () {
+			deleteWorkoutModal.style.display = 'none';
+
+		});
+
+
+
+		window.addEventListener("click", function (e) {
+			if (e.target == exerciseModal) {
+				exerciseModal.style.display = 'none';
+			} else if (e.target == workoutModal) {
+				workoutModal.style.display = 'none';
+			} else if (e.target == editWorkoutModal) {
+				editWorkoutModal.style.display = 'none';
+			}else if(e.target==deleteWorkoutModal){
+				deleteWorkoutModal.style.display='none';
+			}
+
+		});
+
+		
+
+
+
+	</script>
+</body>
+
+</html>
