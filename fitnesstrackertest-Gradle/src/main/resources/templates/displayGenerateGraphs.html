@@ -15,27 +15,76 @@
 
 		}
 
-		#headerBlock {
-			display: flex;
+
+		#header-block {
 			position: fixed;
 			top: 0;
 			left: 0;
 			right: 0;
-			z-index: 100;
-			height: 35px;
-			background-color: #eaeaea;
+			height: 150px;
+			display: flex;
+			flex-direction: column;
 			justify-content: space-around;
+			z-index: 99;
 		}
 
-		#NavigationBlock {
+		#first-header-block {
 			display: flex;
-			justify-content: space-around;
+			height: 50px;
+			background-color: rgb(17, 15, 15);
+			border-bottom: 1px solid #dddddd;
+		}
 
+		#navigation-block {
+			display: flex;
+			justify-content: space-between;
+			width: 55%;
+			color: white;
+			align-items: center;
+			vertical-align: middle;
+			margin-right: 20px;
+		}
+
+		#navigation-block a {
+			text-decoration: none;
+			letter-spacing: 0.5px;
+			line-height: 1px;
+			color: white;
+		}
+
+		#logo-block {
+			color: white;
+			font-family: 'Oswald', sans-serif;
+			font-size: 22px;
+			font-weight: 700;
+			letter-spacing: 2.5px;
+			line-height: 3px;
+			margin-top: 4px;
+			margin-left: 20px;
+			padding-top: 20px;
+			padding-left: 20px;
+			width: 45%;
+		}
+
+		.add-workout-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			vertical-align: middle;
+			padding: 20px;
+			height: 100px;
+			background-color: white;
+		}
+
+		.add-workout-header p {
+			font-size: 32px;
+			font-weight: 200;
 		}
 
 		#mainBlock {
 
-			margin-top: 50px;
+			margin-top: 150px;
+
 		}
 
 		#graphContainer {
@@ -46,28 +95,48 @@
 </head>
 
 <body>
-	<div id="headerBlock">
-		<div>MYFITNESSBUDDY</div>
-		<div id="NavigationBlock">
-			<a href="">Summary</a>
-			<a th:href="@{'addWorkout?id='+${userId}}">Add Workout</a>
-			<a th:href="@{addSets}">Add Sets</a>
-			<a th:href="@{statistics}">Statistics</a>
-			<a href="">Profile</a>
-			<a href="">Log out</a>
+	<div id="header-block">
+		<div id="first-header-block">
+			<div id="logo-block">MYFITNESSBUDDY</div>
+			<div id="navigation-block">
+				<a th:href="@{displayHomePage}">Summary</a>
+				<a th:href="@{addWorkout}">Add Workout</a>
+				<a th:href="@{statistics}">Statistics</a>
+				<a>Profile</a>
+				<a th:href="@{logOut}">Log out</a>
+			</div>
+		</div>
+		<div class="add-workout-header">
+			<p>Generate Graphs</p>
 		</div>
 	</div>
 
 	<div id="mainBlock">
-		<select name="metric" id="metric">
-			<option value="duration">Duration</option>
-			<option value="abs">Abs</option>
-			<option value="cardio">Cardio</option>
+		Select Category:<select name="category" id="category">
+			<option value="">Select Category</option>
+			<option value="OverallCategory">Overall Statistics</option>
+			<option value="Abs">Abs</option>
+			<option value="Back">Back</option>
+			<option value="Biceps">Biceps</option>
+			<option value="Cardio">Cardio</option>
+			<option value="Chest">Chest</option>
+			<option value="Legs">Legs</option>
+			<option value="Shoulders">Shoulders</option>
+			<option value="Triceps">Triceps</option>
 		</select>
-		<select name="timeframe" id="timeframe">
-			<option value="1">Last 24 hours</option>
+		Select SubCategory:
+		<select name="sub-category" id="sub-category">
+			<option value="">Select sub-category</option>
+		</select>
+		Select Metric:<select name="metric" id="metric">
+			<option value="">Select Metric</option>
+		</select>
+		Select Timeframe:<select name="timeframe" id="timeframe">
+			<option value="">Select Timeframe</option>
 			<option value="7">Last 7 days</option>
-			<option value="30">Last 30 days</option>
+			<option value="30">Last 1 month</option>
+			<option value="90">Last 3 months</option>
+			<option value="180">Last 6 months</option>
 		</select>
 		<input type="Submit" value="Generate" id="generateGraphButton">
 
@@ -79,20 +148,93 @@
 	<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script th:inline="javascript">
+
+
+		let subCategories = {
+			"Abs": ["Crunches", "Leg Raises"],
+			"Back": ["Assissted Chin Up", "Assissted Pull Up", "Barbell Row", "Cable Row", "Chin Up", "Deadlift", "Dumbbell Row", "Hyperextensions", "Pull Up", "Pulldowns"],
+			"Biceps": ["Barbell Bicep Curl", "Concentration Curl", "Dumbbell Bicep Curl", "Hammer Curl"],
+			"Cardio": ["Cycling", "Eliptical Trainer", "Rowing Machine", "Running", "Treadmill", "Walking"],
+			"Chest": ["Bench Press", "Cable Crossovers", "Dumbbell flies", "Dumbbell Press", "Incline Bench Press", "Incline Dumbbell Press"],
+			"Legs": ["Calf Raises", "Front Squat", "Leg Curls", "Leg Extensions", "Leg Press", "Lunges", "Seated Calf Raises", "Squat", "Straight Leg Deadlifts"],
+			"Shoulders": ["Dumbbell Lateral Raises", "Military Press", "Shoulder Dumbbell Press", "Upright Rows"],
+			"Triceps": ["Assisted Dips", "Close Grip Bench Press", "Dips", "Pushdowns", "Triceps Extensions"]
+		};
+
+		let metricList1 = ["Sets", "Reps", "Weight", "Minutes", "Distance", "Calories"];
+		let metricList2 = ["Duration", "BodyWeight", "Sets", "Reps", "Weight", "Minutes", "Distance", "Calories"];
+
+
+		// Get references to the category and sub-category dropdown lists
+		let categoryDropdown = document.getElementById("category");
+		let subcategoryDropdown = document.getElementById("sub-category");
+		let metricDropdown = document.getElementById("metric");
+
+		categoryDropdown.addEventListener("change", function () {
+			// Get the selected category
+			let selectedCategory = categoryDropdown.value;
+
+			// Clear the sub-category dropdown list
+			subcategoryDropdown.innerHTML = "<option value=''>Select sub-category</option>";
+             metricDropdown.innerHTML="<option value=''>Select Metric</option>";
+			// Populate the sub-category dropdown list with options for the selected category
+			if (selectedCategory !== "OverallCategory") {
+				subcategoryDropdown.disabled = false;
+				for (let i = 0; i < subCategories[selectedCategory].length; i++) {
+					let option = document.createElement("option");
+					option.text = subCategories[selectedCategory][i];
+					option.value = subCategories[selectedCategory][i];
+					subcategoryDropdown.appendChild(option);
+				}
+
+				for (let i = 0; i < metricList1.length; i++) {
+					let option = document.createElement("option");
+					option.text = metricList1[i];
+					if (metricList1[i] == "Calories") {
+						option.value = "kcal";
+					} else {
+						option.value = metricList1[i].toLocaleLowerCase();
+					}
+
+					metricDropdown.appendChild(option);
+				}
+			} else if (selectedCategory == "OverallCategory") {
+				subcategoryDropdown.disabled = true;
+				for (let i = 0; i < metricList2.length; i++) {
+					let option = document.createElement("option");
+					option.text = metricList2[i];
+					if (metricList2[i] == "Calories") {
+						option.value = "kcal";
+					} else {
+						option.value = metricList2[i].toLocaleLowerCase();
+					}
+
+					metricDropdown.appendChild(option);
+				}
+			}
+		});
+
 		$('#generateGraphButton').on('click', function () {
-			console.log("Inside generate graph click event")
+			console.log("Inside generate graph click event");
+			let category = $('#category').val();
+			console.log("Category is " + category);
+			let subCategory = $('#sub-category').val();
+			console.log("Sub-category is" + subCategory);
 			let metric = $('#metric').val();
 			console.log("Metric is " + metric);
 			let timeframe = $('#timeframe').val();
 			console.log("Timeframe is " + timeframe);
 			$.ajax({
 				url: 'data',
+				data: {category: category, subCategory: subCategory, metric: metric, timeframe: timeframe},
+				dataType: "json",
 				success: function (response) {
 					console.log("Inside response from controller");
-					console.log(response);
-
-                  
-					generateGraph(response);
+					if (timeframe <= 30) {
+						generateGraphBelowOneMonth(response, metric, timeframe);
+					} else {
+						generateGraphAboveOneMonth(response, metric, timeframe);
+					}
 
 				},
 
@@ -100,16 +242,56 @@
 					console.log("Error: " + error);
 					console.log("Status: " + status);
 				}
-
-
 			}
-
 			);
-
 		});
 
-		function generateGraph(responseMap) {
-        
+		function generateGraphBelowOneMonth(responseMap, metric, timeframe) {
+			let minRange = Number.MAX_SAFE_INTEGER, maxRange = Number.MIn_SAFE_INTEGER;
+
+			let startDate = new Date();
+			startDate.setDate(startDate.getDate() - timeframe);
+			console.log(startDate);
+			let month = 0, day = 0;
+			if (startDate.getMonth() < 10) {
+				month = '0' + (startDate.getMonth() + 1);
+			} else {
+				month = startDate.getMonth() + 1;
+			}
+			if (startDate.getDate() < 10) {
+				day = '0' + startDate.getDate();
+			} else {
+				day = startDate.getDate();
+			}
+			let firstString = startDate.getFullYear() + "-" + month + "-" + day;
+			console.log(startDate.getFullYear() + "-" + month + "-" + day);
+
+			if (responseMap[firstString] == null) {
+				responseMap[firstString] = 0;
+			}
+
+			let orderedData = Object.keys(responseMap).sort().reduce((accumulator, currrentValue) => {
+				accumulator[currrentValue] = responseMap[currrentValue];
+				return accumulator;
+			}, {});
+			console.log(orderedData);
+
+			let data = [];
+			Object.keys(orderedData).forEach(function (key) {
+				let obj = {};
+				obj.x = new Date(key).getTime();
+				obj.y = parseInt(orderedData[key]);
+				if (obj.y < minRange) {
+					minRange = obj.y;
+				}
+				if (obj.y > maxRange) {
+					maxRange = obj.y;
+				}
+				data.push(obj);
+
+			});
+			console.log(data);
+
 
 			console.log("Inside highchart function");
 
@@ -123,28 +305,33 @@
 					enabled: false
 				},
 				title: {
-					text: 'Technology Popularity In India'
+					text: 'Progress Graph'
 				},
 				subtitle: {
-					text: 'All Details is not true its a dummy Map'
+					text: 'Track your progress and start moving'
 				},
-			xAxis: {
-					categories:[],
-					crosshair: true
+				xAxis: {
+					type: 'datetime',
+					/*tickInterval: 30.44 * 24 * 3600 * 1000,//per month*/
+					tickInterval: 24 * 3600 * 1000, // one day
+					dateTimeLabelFormats: {
+						day: '%e %b' // Displays as "Day Month"
+					}
+
 				},
 				yAxis: {
-					min: 0,
-					max: 100,
+					min: minRange,
+					max: maxRange,
 					title: {
-						text: 'Technology rating [in %]'
+						text: metric
 					}
 				},
 				tooltip: {
 					borderColor: '#fe7250',
 					borderRadius: 20,
 					headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-					pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-						'<td style="padding:0"><b>{point.y} </b></td></tr>',
+					pointFormat: '<tr><td style="color:{series.color};padding:0">' + metric + ': </td>' +
+						'<td style="padding:0;font-size:10px;"><b>{point.y}</b></td></tr>',
 					footerFormat: '</table>',
 					shared: true,
 					useHTML: true
@@ -157,10 +344,133 @@
 					}
 				},
 				series: [{
-					name: 'Technology',
-					data: []
+					name: 'Timeframe',
+					data: data,
+					marker: {
+						enabled: true,
+						radius: 3, // Controls the size of the dots
+						symbol: 'circle',
+						color: 'black' // Sets the shape of the dots
+					}
 				}]
-					
+
+			});
+
+		}
+
+
+		function generateGraphAboveOneMonth(responseMap, metric, timeframe) {
+			let minRange = Number.MAX_SAFE_INTEGER, maxRange = Number.MIn_SAFE_INTEGER;
+
+			let startDate = new Date();
+			startDate.setDate(startDate.getDate() - timeframe);
+			console.log(startDate);
+			let month = 0, day = 0;
+			if (startDate.getMonth() < 10) {
+				month = '0' + (startDate.getMonth() + 1);
+			} else {
+				month = startDate.getMonth() + 1;
+			}
+			if (startDate.getDate() < 10) {
+				day = '0' + startDate.getDate();
+			} else {
+				day = startDate.getDate();
+			}
+			let firstString = startDate.getFullYear() + "-" + month + "-" + day;
+			console.log(startDate.getFullYear() + "-" + month + "-" + day);
+
+			if (responseMap[firstString] == null) {
+				responseMap[firstString] = 0;
+			}
+			let orderedData = Object.keys(responseMap).sort().reduce((accumulator, currrentValue) => {
+				console.log(currrentValue);
+				accumulator[currrentValue] = responseMap[currrentValue];
+				return accumulator;
+			}, {});
+			console.log(orderedData);
+
+			let data = [];
+			Object.keys(orderedData).forEach(function (key) {
+				let obj = {};
+				obj.x = new Date(key).getTime();
+				obj.y = parseInt(orderedData[key]);
+				if (obj.y < minRange) {
+					minRange = obj.y;
+				}
+				if (obj.y > maxRange) {
+					maxRange = obj.y;
+				}
+				data.push(obj);
+
+			});
+
+
+
+			let endDate = new Date();
+			console.log(data);
+
+
+			console.log("Inside highchart function");
+
+
+			Highcharts.chart('graphContainer', {
+				chart: {
+					type: 'line',
+					zoomType: 'xy'
+				},
+				credits: {
+					enabled: false
+				},
+				title: {
+					text: 'Progress Graph'
+				},
+				subtitle: {
+					text: 'Track your progress and start moving'
+				},
+				xAxis: {
+					type: 'datetime',
+					tickInterval: 30.44 * 24 * 3600 * 1000,
+					/*minorTickInterval:24 * 3600 * 1000,*/
+					dateTimeLabelFormats: {
+						day: '%b %Y' // Displays as "Month Year"
+					}
+
+				},
+				yAxis: {
+					min: minRange,
+					max: maxRange,
+					title: {
+						text: metric
+					}
+				},
+				tooltip: {
+					borderColor: '#fe7250',
+					borderRadius: 20,
+					headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+					pointFormat: '<tr><td style="color:{series.color};padding:0">' + metric + ': </td>' +
+						'<td style="padding:0;font-size:10px;"><b>{point.y}</b></td></tr>',
+					footerFormat: '</table>',
+					shared: true,
+					useHTML: true
+				},
+				plotOptions: {
+					column: {
+						pointPadding: 0.2,
+						borderWidth: 0,
+						color: '#fe7250'
+					}
+				},
+				series: [{
+					name: 'Timeframe',
+					data: data,
+					marker: {
+						enabled: true,
+						radius: 3, // Controls the size of the dots
+						symbol: 'circle',
+						color: 'black' // Sets the shape of the dots
+					}
+				}]
+
 			});
 
 		}

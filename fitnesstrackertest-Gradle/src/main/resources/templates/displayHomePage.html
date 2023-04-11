@@ -105,7 +105,7 @@
 								var setCount = 1;
 								exerciseSetList[exerciseName].forEach(function (set) {
 
-									var setDiv = $("<div>").addClass("eachset-hover").text(exerciseName + "Set" + setCount + " Weight:" + set.weight + " Reps: " + set.reps + " Mins:" + set.minutes + " Distance: " + set.distance + " Kcal: " + set.Kcal);
+									var setDiv = $("<div>").addClass("eachset-hover").text(exerciseName + " Set" + setCount + " Weight:" + set.weight + " Reps: " + set.reps + " Mins:" + set.minutes + " Distance: " + set.distance + " Kcal: " + set.Kcal);
 									exerciseSetHoverDiv.append(setDiv);
 									setCount++;
 
@@ -145,27 +145,49 @@
 	<title>Home Page</title>
 	<style>
 		* {
-			padding: 0;
 			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
 			font-family: 'Oswald', sans-serif;
-
 		}
 
-		#headerBlock {
-			display: flex;
-			justify-content: space-between;
+		#header-block {
 			position: fixed;
 			top: 0;
 			left: 0;
 			right: 0;
-			z-index: 100;
+			height: 150px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			  z-index: 99;
+		}
+
+		#first-header-block {
+			display: flex;
 			height: 50px;
 			background-color: rgb(17, 15, 15);
 			border-bottom: 1px solid #dddddd;
-
 		}
 
-		#logoBlock {
+		#navigation-block {
+			display: flex;
+			justify-content: space-between;
+			width: 55%;
+			color: white;
+			align-items: center;
+			vertical-align: middle;
+			margin-right: 20px;
+		}
+
+		#navigation-block a {
+			text-decoration: none;
+			letter-spacing: 0.5px;
+			line-height: 1px;
+			color: white;
+		}
+
+		#logo-block {
 			color: white;
 			font-family: 'Oswald', sans-serif;
 			font-size: 22px;
@@ -179,34 +201,31 @@
 			width: 45%;
 		}
 
-		#NavigationBlock {
+		.summary-header {
 			display: flex;
 			justify-content: space-between;
-			width: 55%;
-			color: white;
 			align-items: center;
 			vertical-align: middle;
-			margin-right: 20px;
+			padding: 20px;
+			height: 100px;
+			background-color: white;
 		}
 
-		#NavigationBlock a {
-			color: white;
-			text-decoration: none;
-			letter-spacing: 0.5px;
-			line-height: 1px;
+		.summary-header p {
+			font-size: 28px;
+			font-weight: 300;
 		}
 
 
 
-		#mainBlock {
-			margin-top: 55px;
+		.main-block {
+			margin-top: 152px;
 
 		}
 
 		#workout-summary {
 			margin: 10px auto;
 			width: 75%;
-
 			border: 1px solid black;
 		}
 
@@ -258,7 +277,7 @@
 		.each-workout__overview {
 			display: flex;
 			flex-direction: column;
-
+			justify-content:start;
 		}
 
 		.each-workout__overview__workout-type {
@@ -320,18 +339,22 @@
 </head>
 
 <body>
-	<div id="headerBlock">
-		<div id="logoBlock">MYFITNESSBUDDY</div>
-		<div id="NavigationBlock">
-			<a href="">Summary</a>
-			<a th:href="@{addWorkout}">Add Workout</a>
-			<a th:href="@{addSets}">Add Sets</a>
-			<a th:href="@{statistics}">Statistics</a>
-			<a href="">Profile</a>
-			<a href="">Log out</a>
+	<div id="header-block">
+		<div id="first-header-block">
+			<div id="logo-block">MYFITNESSBUDDY</div>
+			<div id="navigation-block">
+				<a th:href="@{displayHomePage}">Summary</a>
+				<a th:href="@{addWorkout}">Add Workout</a>
+				<a th:href="@{statistics}">Statistics</a>
+				<a>Profile</a>
+				<a th:href="@{logOut}">Log out</a>
+			</div>
+		</div>
+		<div class="summary-header">
+			<p>Workout Summary</p>
 		</div>
 	</div>
-	<div id="mainBlock">
+	<div class="main-block">
 
 		<div id="workout-summary">
 

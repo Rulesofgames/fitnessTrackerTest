@@ -368,11 +368,11 @@
 		<div id="first-header-block">
 			<div id="logo-block">MYFITNESSBUDDY</div>
 			<div id="navigation-block">
-				<a>Summary</a>
+				<a th:href="@{displayHomePage}">Summary</a>
 				<a th:href="@{addWorkout}">Add Workout</a>
 				<a th:href="@{statistics}">Statistics</a>
 				<a>Profile</a>
-				<a>Log out</a>
+				<a th:href="@{logOut}">Log out</a>
 			</div>
 		</div>
 		<div class="add-exercise-header">
@@ -396,7 +396,7 @@
 					<form action="saveEditSet" method="post">
 						<div class="input-field">
 						<label for="weight">Select Exercise:</label>
-						<select id="edit-set-exercisename" name="exerciseId">
+						<select id="edit-set-exercisename" name="exerciseId" required>
 							<option th:each="exercise:${exerciseList}" th:value="${exercise.id}"
 								th:text="${exercise.exerciseName}" th:selected="${exercise.id == selectedExerciseId}">
 							</option>
@@ -480,7 +480,7 @@
 					<form action="saveSet" method="post">
 						<div class="input-field">
 						<label for="weight">Select Exercise:</label>
-						<select name="exerciseId">
+						<select name="exerciseId" required>
 							<option value="">Select Exercise</option>
 							<option th:each="exercise:${exerciseList}" th:value="${exercise.id}"
 								th:text="${exercise.exerciseName}"></option>
@@ -524,6 +524,7 @@
 				<thead>
 				<tr>
 					<th>Exercise</th>
+					<th>Exercise Category</th>
 					<th>SetId</th>
 					<th>Weight</th>
 					<th>Reps</th>
@@ -537,6 +538,7 @@
 				<tbody>
 				<tr th:each="set:${setsList}">
 					<td th:text="${set.exercise.exerciseName}"></td>
+					<td th:text="${set.exercise.exerciseCategory}"></td>
 					<td th:text="${set.id}"></td>
 					<td th:text="${set.weight}"></td>
 					<td th:text="${set.reps}"></td>

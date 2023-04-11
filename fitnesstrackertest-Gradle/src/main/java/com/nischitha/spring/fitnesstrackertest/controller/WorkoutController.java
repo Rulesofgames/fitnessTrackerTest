@@ -26,6 +26,8 @@ import com.nischitha.spring.fitnesstrackertest.repos.UserRepository;
 import com.nischitha.spring.fitnesstrackertest.repos.WorkoutReopository;
 import com.nischitha.spring.fitnesstrackertest.services.FitnessTrackerService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class WorkoutController {
 
@@ -47,11 +49,12 @@ public class WorkoutController {
 	ExerciseRepository exerciseRepo;
 
 	@RequestMapping("addWorkout")
-	public String addWorkout(ModelMap modelmap) {
+	public String addWorkout(ModelMap modelmap,HttpSession session) {
 		LOGGER.info("Inside addWorkout,Start");
+		int userId=(int)session.getAttribute("userId");
 		// modelmap.addAttribute("userId",id);
-		List<Workout> workoutList = workoutRepo
-				.findAll(Sort.by(new Sort.Order(Direction.DESC, "date"), new Sort.Order(Direction.DESC, "startTime")));
+	
+		List<Workout> workoutList = workoutRepo.findByUserId(userId,Sort.by(new Sort.Order(Direction.DESC, "date"), new Sort.Order(Direction.DESC, "startTime")));
 		modelmap.addAttribute("workoutList", workoutList);
 		modelmap.addAttribute("exerciseList", exerciseRepo.findAll());//might need to delete later
 		LOGGER.info("Inside addWorkout,end");
@@ -66,31 +69,26 @@ public class WorkoutController {
 	}
 
 	@PostMapping("saveWorkout")
-	public String saveWorkout(@ModelAttribute("workout") Workout workout, ModelMap modelmap) {
+	public String saveWorkout(@ModelAttribute("workout") Workout workout, ModelMap modelmap,HttpSession session) {
 		LOGGER.info("Inside saveWorkout");
-
-		// saving all workouts to user id 1
-		workout.setUser(userRepo.findById(1).get());
+		int userId=(int)session.getAttribute("userId");
+		workout.setUser(userRepo.findById(userId).get());
 
 		Workout savedWorkout = fitnessTrackerServiceImpl.saveWorkout(workout);
 
-		/*
-		 * you are repeating code..see if u can avoid it
-		 * modelmap.addAttribute("userId",id); List<Workout>
-		 * workoutList=workoutRepo.findAll(Sort.by(new Sort.Order(Direction.DESC,
-		 * "date"),new Sort.Order(Direction.DESC,"startTime")));
-		 * modelmap.addAttribute("workoutList",workoutList);
-		 */
 		return "redirect:addWorkout";
 
 	}
-
+/*
 	@PostMapping("saveEditWorkout")
-	public String saveEditWorkout(@ModelAttribute("workout") Workout workout) {
+	public String saveEditWorkout(@ModelAttribute("workout") Workout workout,HttpSession session) {
+		LOGGER.info("Iniside save Edit workout");
+		int userId=(int)session.getAttribute("userId");
+		workout.setUser(userRepo.getById(userId));
 		Workout savedWorkout = fitnessTrackerServiceImpl.saveWorkout(workout);
 		return "redirect:addWorkout";
 	}
-	
+*/	
 
 	@PostMapping("saveEditSet")
 	public String saveEditSet(@ModelAttribute("set") Sets set, @RequestParam("workoutId") Integer workoutId,
@@ -124,7 +122,7 @@ public class WorkoutController {
 
 		LOGGER.info("Inside viewWorkoutLog");
 		modelmap.addAttribute("exerciseList", exerciseRepo.findAll());
-		modelmap.addAttribute("setsList", setsRepo.findAllByWorkoutId(workoutId));
+		modelmap.addAttribute("setsList", setsRepo.findAllByWorkoutId(workoutId,Sort.by(new Sort.Order(Direction.DESC, "exercise"))));
 		modelmap.addAttribute("workoutId",workoutId);
 		return "displayWorkoutLog";
 	}
@@ -151,20 +149,27 @@ public class WorkoutController {
 	}
 	
 	@GetMapping("summary")
-	public @ResponseBody List<Workout> workoutSummary(){
+	public @ResponseBody List<Workout> workoutSummary(HttpSession session){
 		LOGGER.info("Inside workoutSummary");
-		
-		List<Workout> list=workoutRepo.findAll();
-		/*list.forEach(data->{
-			System.out.println("Id:"+data.getId());
-			data.getSets().forEach(sets->{
-				System.out.println(sets.getId());
-			});
-		});*/
-		
-	
+		int userId=(int)session.getAttribute("userId");
+		List<Workout> list=workoutRepo.findByUserId(userId,Sort.by(new Sort.Order(Direction.DESC, "date"), new Sort.Order(Direction.DESC, "startTime")));
 		return list;
 		
+	}
+	
+	@RequestMapping("displayHomePage")
+	public String displayHomePage() {
+		return "displayHomePage";
+	}
+	
+	@GetMapping("logOut")
+	public String DisplaySignInPage(HttpSession session) {
+		LOGGER.info("Inside logout");
+		if (session.getAttribute("userId") != null) {
+		    session.removeAttribute("userId");
+		}
+		session.invalidate();
+		return "redirect:SignInPage";
 	}
 
 }

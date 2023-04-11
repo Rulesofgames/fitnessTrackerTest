@@ -3,6 +3,7 @@ package com.nischitha.spring.fitnesstrackertest.controller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,10 +16,14 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nischitha.spring.fitnesstrackertest.entities.Workout;
 import com.nischitha.spring.fitnesstrackertest.repos.WorkoutReopository;
+import com.nischitha.spring.fitnesstrackertest.services.FitnessTrackerServiceImpl;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class StatisticsController {
@@ -27,6 +32,9 @@ public class StatisticsController {
 
 	@Autowired
 	WorkoutReopository workoutRepo;
+	
+	@Autowired
+	FitnessTrackerServiceImpl fitnessTrackerServiceImpl;
 
 	@RequestMapping("statistics")
 	public String generateGraphs(ModelMap modelmap) {
@@ -37,39 +45,22 @@ public class StatisticsController {
 	}
 	
 	@GetMapping("data")
-	public  @ResponseBody  String getData(ModelMap modelmap){
+	public  @ResponseBody  Map<String,String> getData(ModelMap modelmap,@RequestParam("metric")String metric,@RequestParam("timeframe")Integer timeframe,HttpSession session){
 		LOGGER.info("Inside getData mthod");
-		/*Map<String,Integer> responseMap=new HashMap<>();
-		List<Object[]> list=workoutRepo.findDuration();
+		LOGGER.info("Timeframe is"+timeframe+"Metric is"+metric);
+		int userId=(int)session.getAttribute("userId");
 		
-		LOGGER.info("Got response from db");
+		return fitnessTrackerServiceImpl.generateGraphData(metric, timeframe, userId);
+		
+		/*List<Object[]> list=workoutRepo.findDuration(timeframe);
+	
+		Map<String,String> map=new HashMap<>();
 		for(Object[] obj:list) {
-			LOGGER.info("Date is "+obj[0].toString()+" Duration is: "+Integer.valueOf((obj[1]).toString()));
-			responseMap.put(obj[0].toString(),Integer.valueOf((obj[1]).toString()));
+			map.put(obj[0].toString(), (obj[1]).toString());
+			
 		}
-		responseMap.put("2023-3-05", 25);
-		responseMap.put("2023-3-06", 26);
-		responseMap.put("2023-3-07", 27);
-		responseMap.put("2023-3-08", 28);
-		responseMap.put("2023-3-09", 29);
-		responseMap.put("2023-3-10", 30);
-		responseMap.put("2023-3-12", 31);
-		responseMap.put("2023-3-13", 32);
-		responseMap.put("2023-3-14", 67);
-		responseMap.put("2023-3-15", 90);
-		responseMap.put("2023-3-16", 56);
-		responseMap.put("2023-3-17", 39);
-		responseMap.put("2023-3-18",90);
-		responseMap.put("2023-3-19", 77);*/
-		
-		
-		List<Workout> list=workoutRepo.findLastSixMonths();
-		list.forEach(data->{
-			System.out.println(data.getDate());
-		});
-		
-		
-		return "";
+	
+		return map;*/
 	}
 
 }

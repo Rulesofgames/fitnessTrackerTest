@@ -23,6 +23,8 @@ import com.nischitha.spring.fitnesstrackertest.repos.UserRepository;
 import com.nischitha.spring.fitnesstrackertest.services.FitnessTrackerService;
 import com.nischitha.spring.fitnesstrackertest.util.EmailUtil;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class UserController {
 
@@ -52,6 +54,7 @@ public class UserController {
 
 	@RequestMapping("SignInPage")
 	public String displaySignInPage() {
+		System.out.println(1+2+3+"welcome"+4+5);
 
 		return "displaySignInPage";
 
@@ -93,7 +96,7 @@ public class UserController {
 	}
 
 	@PostMapping("checklogIn")
-	public String checkLogIn(@RequestParam("email") String email, @RequestParam("password") String password,
+	public String checkLogIn(@RequestParam("email") String email, @RequestParam("password") String password,HttpSession session,
 			ModelMap modelmap) {
 		User user = userRepo.findByEmail(email);
 
@@ -103,9 +106,10 @@ public class UserController {
 
 			return "displaySignInPage";
 		} else {
-			int id = user.getId();
-			modelmap.addAttribute("userId", id);
-			return "displayHomePage";
+			/*int id = user.getId();
+			modelmap.addAttribute("userId", id);*/
+			session.setAttribute("userId", user.getId());
+			return "redirect:displayHomePage";
 		}
 
 	}

@@ -26,7 +26,7 @@
 			display: flex;
 			flex-direction: column;
 			justify-content: space-around;
-			  z-index: 99;
+			z-index: 99;
 		}
 
 		#first-header-block {
@@ -208,7 +208,8 @@
 
 		#input-field-textarea input[type=textarea] {}
 
-		#add-workout-modal__formbox__warning,#edit-workout-modal__formbox__warning {
+		#add-workout-modal__formbox__warning,
+		#edit-workout-modal__formbox__warning {
 			width: max-content;
 			height: 13px;
 			margin: 0 auto;
@@ -318,8 +319,8 @@
 			position: relative;
 			cursor: pointer;
 			transition: 0.5s;
-			display:inline-block;
-			padding:5px 3px;
+			display: inline-block;
+			padding: 5px 3px;
 		}
 
 
@@ -379,11 +380,11 @@
 		<div id="first-header-block">
 			<div id="logo-block">MYFITNESSBUDDY</div>
 			<div id="navigation-block">
-				<a>Summary</a>
+				<a th:href="@{displayHomePage}">Summary</a>
 				<a th:href="@{addWorkout}">Add Workout</a>
 				<a th:href="@{statistics}">Statistics</a>
 				<a>Profile</a>
-				<a>Log out</a>
+				<a th:href="@{logOut}">Log out</a>
 			</div>
 		</div>
 		<div class="add-workout-header">
@@ -393,7 +394,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="mainBlock">
+	<div class="main-block">
 		<div id="whole-workout-modal-window">
 			<div class="add-workout-modal">
 				<div class="modal-header">
@@ -499,7 +500,7 @@
 					<h2 id="">Edit Workout</h2>
 				</div>
 				<div id="edit-workout-modal__formbox">
-					<form action="saveEditWorkout" method="post">
+					<form action="saveWorkout" method="post">
 						<div class="input-field">
 							<label for="date">Date:</label>
 							<input type="date" id="edit-workout-date" name="date" required>
@@ -542,7 +543,7 @@
 					<h2 id="">Delete Workout</h2>
 				</div>
 				<div id="delete-workout-modal__formbox">
-					<form action="delete-workout__form" method="post">
+					<form action="deleteWorkout" method="post">
 						<div id="delete-workout__form__confirmMessage">
 							<p>Are you sure you want to delete this item?</p>
 						</div>
@@ -594,7 +595,8 @@
 									<p>Edit Workout</p>
 								</div>
 								<button type="button" class="edit-workout-button"
-									th:attr="data-workout-id=${workout.id},data-workout-date=${workout.date},data-workout-startTime=${workout.startTime},data-workout-endTime=${workout.endTime},data-workout-bodyWeight=${workout.bodyWeight},data-workout-notes=${workout.notes}"><i class="fa-solid fa-pen-to-square"></i></button>
+									th:attr="data-workout-id=${workout.id},data-workout-date=${workout.date},data-workout-startTime=${workout.startTime},data-workout-endTime=${workout.endTime},data-workout-bodyWeight=${workout.bodyWeight},data-workout-notes=${workout.notes}"><i
+										class="fa-solid fa-pen-to-square"></i></button>
 							</div>
 							<div class="icon-box">
 								<div class="icon-box__hovercontent">
@@ -623,6 +625,11 @@
 		closeWorkoutModal.addEventListener("click", function () {
 			workoutModal.style.display = 'none';
 		});
+
+		let today = new Date().toISOString().substr(0, 10);
+
+		// Set the max attribute of the date input field to today's date
+		document.getElementById("add-workout-date").setAttribute("max", today);
 
 		//start time should be less than end time when user tries to add new workout
 		let addWorkoutStartTimeInput = document.getElementById('add-workout-startTime');
@@ -694,6 +701,10 @@
 			editWorkoutModal.style.display = 'none';
 
 		});
+		 
+
+		// Set the max attribute of the date input field to today's date
+		document.getElementById("edit-workout-date").setAttribute("max", today);
 
 
 		//start time should be less than end time when you edit workout info
@@ -733,7 +744,7 @@
 				deleteWorkoutModal.style.display = "block";
 				let workoutId = button.getAttribute("data-workout-id");
 				console.log("selected workout Id is" + workoutId);
-				let workoutInputId = document.getElementById("deleteWorkoutId");
+				let workoutInputId = document.getElementById("delete-workout-id");
 				workoutInputId.value = Number(workoutId);
 			});
 		});
