@@ -113,8 +113,7 @@
 
 	<div id="mainBlock">
 		Select Category:<select name="category" id="category">
-			<option value="">Select Category</option>
-			<option value="OverallCategory">Overall Statistics</option>
+			<option value="overall">Overall Statistics</option>
 			<option value="Abs">Abs</option>
 			<option value="Back">Back</option>
 			<option value="Biceps">Biceps</option>
@@ -126,13 +125,19 @@
 		</select>
 		Select SubCategory:
 		<select name="sub-category" id="sub-category">
-			<option value="">Select sub-category</option>
+			<option value="overall">Overall Statistics</option>
 		</select>
 		Select Metric:<select name="metric" id="metric">
-			<option value="">Select Metric</option>
+			<option value="kcal">Calories</option>
+			<option value="sets">Sets</option>
+			<option value="reps">Reps</option>
+			<option value="weight">Weight</option>
+			<option value="minutes">Minutes</option>
+			<option value="distance">Distance</option>
+			<option value="duration">Duration</option>
+			<option value="bodyweight">BodyWeight</option>
 		</select>
 		Select Timeframe:<select name="timeframe" id="timeframe">
-			<option value="">Select Timeframe</option>
 			<option value="7">Last 7 days</option>
 			<option value="30">Last 1 month</option>
 			<option value="90">Last 3 months</option>
@@ -161,8 +166,8 @@
 			"Triceps": ["Assisted Dips", "Close Grip Bench Press", "Dips", "Pushdowns", "Triceps Extensions"]
 		};
 
-		let metricList1 = ["Sets", "Reps", "Weight", "Minutes", "Distance", "Calories"];
-		let metricList2 = ["Duration", "BodyWeight", "Sets", "Reps", "Weight", "Minutes", "Distance", "Calories"];
+		let metricList1 = ["Calories","Sets", "Reps", "Weight", "Minutes", "Distance"];
+		let metricList2 = ["Calories","Duration", "BodyWeight", "Sets", "Reps", "Weight", "Minutes", "Distance"];
 
 
 		// Get references to the category and sub-category dropdown lists
@@ -175,11 +180,12 @@
 			let selectedCategory = categoryDropdown.value;
 
 			// Clear the sub-category dropdown list
-			subcategoryDropdown.innerHTML = "<option value=''>Select sub-category</option>";
-             metricDropdown.innerHTML="<option value=''>Select Metric</option>";
+			subcategoryDropdown.innerHTML = "<option value='overall'>Overall Statistics</option>";
+             //metricDropdown.innerHTML="<option value='calories'>Calories</option>";
+             metricDropdown.innerHTML="";
 			// Populate the sub-category dropdown list with options for the selected category
-			if (selectedCategory !== "OverallCategory") {
-				subcategoryDropdown.disabled = false;
+			if (selectedCategory !== "overall") {
+				//subcategoryDropdown.disabled = false;
 				for (let i = 0; i < subCategories[selectedCategory].length; i++) {
 					let option = document.createElement("option");
 					option.text = subCategories[selectedCategory][i];
@@ -198,8 +204,8 @@
 
 					metricDropdown.appendChild(option);
 				}
-			} else if (selectedCategory == "OverallCategory") {
-				subcategoryDropdown.disabled = true;
+			} else if (selectedCategory == "overall") {
+				//subcategoryDropdown.disabled = true;
 				for (let i = 0; i < metricList2.length; i++) {
 					let option = document.createElement("option");
 					option.text = metricList2[i];
@@ -231,9 +237,9 @@
 				success: function (response) {
 					console.log("Inside response from controller");
 					if (timeframe <= 30) {
-						generateGraphBelowOneMonth(response, metric, timeframe);
+						generateGraphBelowOneMonth(response, category,subCategory,metric, timeframe);
 					} else {
-						generateGraphAboveOneMonth(response, metric, timeframe);
+						generateGraphAboveOneMonth(response,category,subCategory, metric, timeframe);
 					}
 
 				},
@@ -246,28 +252,48 @@
 			);
 		});
 
-		function generateGraphBelowOneMonth(responseMap, metric, timeframe) {
+		function generateGraphBelowOneMonth(responseMap, category,subCategory,metric, timeframe) {
 			let minRange = Number.MAX_SAFE_INTEGER, maxRange = Number.MIn_SAFE_INTEGER;
 
 			let startDate = new Date();
+			
 			startDate.setDate(startDate.getDate() - timeframe);
 			console.log(startDate);
-			let month = 0, day = 0;
+			let startMonth = 0, startDay = 0;
 			if (startDate.getMonth() < 10) {
-				month = '0' + (startDate.getMonth() + 1);
+				startMonth = '0' + (startDate.getMonth() + 1);
 			} else {
-				month = startDate.getMonth() + 1;
+				startMonth = startDate.getMonth() + 1;
 			}
 			if (startDate.getDate() < 10) {
-				day = '0' + startDate.getDate();
+				startDay = '0' + startDate.getDate();
 			} else {
-				day = startDate.getDate();
+				startDay = startDate.getDate();
 			}
-			let firstString = startDate.getFullYear() + "-" + month + "-" + day;
-			console.log(startDate.getFullYear() + "-" + month + "-" + day);
+			let firstString = startDate.getFullYear() + "-" + startMonth + "-" + startDay;
+			console.log(startDate.getFullYear() + "-" + startMonth + "-" + startDay);
 
 			if (responseMap[firstString] == null) {
 				responseMap[firstString] = 0;
+			}
+			let endDate=new Date();
+			let endMonth=0,endDay=0;
+			
+			if (endDate.getMonth() < 10) {
+				endMonth = '0' + (endDate.getMonth() + 1);
+			} else {
+				endMonth = endDate.getMonth() + 1;
+			}
+			if (endDate.getDate() < 10) {
+				endDay = '0' + endDate.getDate();
+			} else {
+				endDay = endDate.getDate();
+			}
+				let secondString = endDate.getFullYear() + "-" + endMonth + "-" + endDay;
+			console.log(endDate.getFullYear() + "-" + endMonth + "-" + endDay);
+			
+			if (responseMap[secondString] == null) {
+				responseMap[secondString] = 0;
 			}
 
 			let orderedData = Object.keys(responseMap).sort().reduce((accumulator, currrentValue) => {
@@ -308,7 +334,7 @@
 					text: 'Progress Graph'
 				},
 				subtitle: {
-					text: 'Track your progress and start moving'
+					text: category
 				},
 				xAxis: {
 					type: 'datetime',
@@ -359,28 +385,48 @@
 		}
 
 
-		function generateGraphAboveOneMonth(responseMap, metric, timeframe) {
+		function generateGraphAboveOneMonth(responseMap,category,subCategory, metric, timeframe) {
 			let minRange = Number.MAX_SAFE_INTEGER, maxRange = Number.MIn_SAFE_INTEGER;
 
 			let startDate = new Date();
+			
 			startDate.setDate(startDate.getDate() - timeframe);
 			console.log(startDate);
-			let month = 0, day = 0;
+			let startMonth = 0, startDay = 0;
 			if (startDate.getMonth() < 10) {
-				month = '0' + (startDate.getMonth() + 1);
+				startMonth = '0' + (startDate.getMonth() + 1);
 			} else {
-				month = startDate.getMonth() + 1;
+				startMonth = startDate.getMonth() + 1;
 			}
 			if (startDate.getDate() < 10) {
-				day = '0' + startDate.getDate();
+				startDay = '0' + startDate.getDate();
 			} else {
-				day = startDate.getDate();
+				startDay = startDate.getDate();
 			}
-			let firstString = startDate.getFullYear() + "-" + month + "-" + day;
-			console.log(startDate.getFullYear() + "-" + month + "-" + day);
+			let firstString = startDate.getFullYear() + "-" + startMonth + "-" + startDay;
+			console.log(startDate.getFullYear() + "-" + startMonth + "-" + startDay);
 
 			if (responseMap[firstString] == null) {
 				responseMap[firstString] = 0;
+			}
+			let endDate=new Date();
+			let endMonth=0,endDay=0;
+			
+			if (endDate.getMonth() < 10) {
+				endMonth = '0' + (endDate.getMonth() + 1);
+			} else {
+				endMonth = endDate.getMonth() + 1;
+			}
+			if (endDate.getDate() < 10) {
+				endDay = '0' + endDate.getDate();
+			} else {
+				endDay = endDate.getDate();
+			}
+				let secondString = endDate.getFullYear() + "-" + endMonth + "-" + endDay;
+			console.log(endDate.getFullYear() + "-" + endMonth + "-" + endDay);
+			
+			if (responseMap[secondString] == null) {
+				responseMap[secondString] = 0;
 			}
 			let orderedData = Object.keys(responseMap).sort().reduce((accumulator, currrentValue) => {
 				console.log(currrentValue);
@@ -406,7 +452,7 @@
 
 
 
-			let endDate = new Date();
+			
 			console.log(data);
 
 
@@ -425,7 +471,7 @@
 					text: 'Progress Graph'
 				},
 				subtitle: {
-					text: 'Track your progress and start moving'
+					text: category
 				},
 				xAxis: {
 					type: 'datetime',

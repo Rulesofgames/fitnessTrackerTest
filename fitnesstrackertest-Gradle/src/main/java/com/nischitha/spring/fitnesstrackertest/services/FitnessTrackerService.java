@@ -15,6 +15,6 @@ public interface FitnessTrackerService {
 	
 	public Workout saveWorkout(Workout workout);
 	
-	public Map<String,String> generateGraphData(String metric,Integer timeframe,Integer userId);
+	public Map<String,String> generateGraphData(String category,String subCategory,String metric,Integer timeframe,Integer userId);
 
 }

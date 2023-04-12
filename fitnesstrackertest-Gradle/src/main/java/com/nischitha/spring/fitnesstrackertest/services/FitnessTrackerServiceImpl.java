@@ -99,37 +99,50 @@ public class FitnessTrackerServiceImpl implements FitnessTrackerService {
 	}
 
 	@Override
-	public Map<String, String> generateGraphData(String metric, Integer timeframe, Integer userId) {
+	public Map<String, String> generateGraphData(String category, String subCategory, String metric, Integer timeframe,
+			Integer userId) {
 
 		List<Object[]> list = new ArrayList<>();
-		if (metric.equals("duration")) {
-			list = workoutRepo.findDuration(timeframe, userId);
+		if (category.equals("overall") && subCategory.equals("overall")) {
 
-		} else if (metric.equals("sets")) {
-			list = workoutRepo.findTotalSets(timeframe, userId);
+			if (metric.equals("duration")) {
+				list = workoutRepo.findDuration(timeframe, userId);
 
-		} else if (metric.equals("reps")) {
-			list = workoutRepo.findTotalReps(timeframe, userId);
+			} else if (metric.equals("sets")) {
+				list = workoutRepo.findTotalSets(timeframe, userId);
+
+			} else if (metric.equals("reps") || metric.equals("weight") || metric.equals("minutes")
+					|| metric.equals("distance") || metric.equals("kcal")) {
+				list = workoutRepo.findTotal(metric, timeframe, userId);
+
+			} else {
+				// add logic to retrieve bodyweight
+			}
+
+		} else if (!category.equals("overall") && subCategory.equals("overall")) {
+
+			System.out.println("Calling findCategoryTotal");
+			if (metric.equals("sets")) {
+				list = workoutRepo.findCategorySets(category, timeframe, userId);
+			} else {
+				list = workoutRepo.findCategoryTotal(category, metric, timeframe, userId);
+			}
 			
-		} else if (metric.equals("weight")) {
-			list = workoutRepo.findTotalWeight(timeframe, userId);
 
-		} else if (metric.equals("minutes")) {
-			list = workoutRepo.findTotalMinutes(timeframe, userId);
+		} else if (!category.equals("overall") && !subCategory.equals("overall")) {
+			if (metric.equals("sets")) {
+				list = workoutRepo.findSubCategorySets(subCategory, timeframe, userId);
+			} else {
+				list = workoutRepo.findSubCategoryTotal(subCategory, metric, timeframe, userId);
+			}
 
-		} else if (metric.equals("distance")) {
-			list = workoutRepo.findTotalDistance(timeframe, userId);
-
-		} else if (metric.equals("kcal")) {
-			list = workoutRepo.findTotalKcal(timeframe, userId);
-
-		} else {
 			
 		}
 
 		Map<String, String> map = new HashMap<>();
 		for (Object[] obj : list) {
 			map.put(obj[0].toString(), (obj[1]).toString());
+			System.out.println(obj[0].toString() + " " + (obj[1]).toString());
 
 		}
 		return map;

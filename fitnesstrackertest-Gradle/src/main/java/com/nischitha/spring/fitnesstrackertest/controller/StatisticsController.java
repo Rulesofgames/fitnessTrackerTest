@@ -45,12 +45,12 @@ public class StatisticsController {
 	}
 	
 	@GetMapping("data")
-	public  @ResponseBody  Map<String,String> getData(ModelMap modelmap,@RequestParam("metric")String metric,@RequestParam("timeframe")Integer timeframe,HttpSession session){
+	public  @ResponseBody  Map<String,String> getData(ModelMap modelmap,@RequestParam("category")String category,@RequestParam("subCategory")String subCategory,@RequestParam("metric")String metric,@RequestParam("timeframe")Integer timeframe,HttpSession session){
 		LOGGER.info("Inside getData mthod");
 		LOGGER.info("Timeframe is"+timeframe+"Metric is"+metric);
 		int userId=(int)session.getAttribute("userId");
 		
-		return fitnessTrackerServiceImpl.generateGraphData(metric, timeframe, userId);
+		return fitnessTrackerServiceImpl.generateGraphData(category,subCategory,metric, timeframe, userId);
 		
 		/*List<Object[]> list=workoutRepo.findDuration(timeframe);
 	
