@@ -1,0 +1,379 @@
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<script>
+		$(document).ready(function () {
+			let emailInput = $('#email');
+			let saveButton = $('#save-btn');
+			let emailMessageBlock = $('#email-flashmessage-sub-block');
+			let passwordMessageBlock = $('#password-flashmessage-sub-block');
+			emailInput.on('input', function () {
+				let email = emailInput.val();
+				$.get('editProfileEmail', {email: email}, function (response) {
+					let emailExists = response.exists;
+					if (emailExists) {
+						saveButton.attr('disabled', true);
+						saveButton.addClass("save-btn-disable");
+						emailMessageBlock.text("Username already exists.Please choose different username");
+					} else {
+						saveButton.attr('disabled', false);
+						emailMessageBlock.text("");
+					}
+
+				});
+			});
+
+			let passwordInput = $('#password');
+			passwordInput.on('input', function () {
+				let password = passwordInput.val();
+				$.get('validatePassword', {password: password}, function (response) {
+					let message = response.msg;
+					console.log(message);
+					console.log("response length is" + message.length);
+					if (message.length == 0) {
+						saveButton.attr('disabled', false);
+						passwordMessageBlock.text("");
+
+					} else {
+						saveButton.attr('disabled', true);
+						saveButton.addClass("save-btn-disable");
+						passwordMessageBlock.text(message);
+
+					}
+
+				});
+
+
+
+			});
+
+		});
+
+
+		setTimeout(function () {
+
+			let sucessMessageBlock = document.getElementById("success-flash-message");
+			sucessMessageBlock.innerText = "";
+		}, 3000);
+
+
+	</script>
+
+	<title>Home Page</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: 'Oswald', sans-serif;
+		}
+
+		#header-block {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 140px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			z-index: 99;
+		}
+
+		#first-header-block {
+			display: flex;
+			height: 50px;
+			background-color: rgb(17, 15, 15);
+			border-bottom: 1px solid #dddddd;
+		}
+
+		#navigation-block {
+			display: flex;
+			justify-content: space-between;
+			width: 55%;
+			color: white;
+			align-items: center;
+			vertical-align: middle;
+			margin-right: 20px;
+		}
+
+		#navigation-block a {
+			text-decoration: none;
+			letter-spacing: 0.5px;
+			line-height: 1px;
+			color: white;
+		}
+
+		#logo-block {
+			color: white;
+			font-family: 'Oswald', sans-serif;
+			font-size: 22px;
+			font-weight: 700;
+			letter-spacing: 2.5px;
+			line-height: 3px;
+			margin-top: 4px;
+			margin-left: 20px;
+			padding-top: 20px;
+			padding-left: 20px;
+			width: 45%;
+		}
+
+		.profile-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			vertical-align: middle;
+			padding: 20px;
+			height: 90px;
+			background-color: white;
+		}
+
+		.profile-header p {
+			font-size: 32px;
+			font-weight: 250;
+		}
+
+		#edit-profile-btn {
+			margin-right: 25px;
+			font-size: 14px;
+			font-weight: bold;
+			box-shadow: 0 0 3px 1px #fe7250;
+			transition: box-shadow 0.3s;
+			padding: 10px 20px;
+			color: #fe7250;
+			background-color: #fff;
+		}
+
+		button {
+			outline: none;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			padding: 5px;
+			color: #ffffff;
+		}
+
+
+		.main-block {
+			margin-top: 152px;
+
+		}
+
+		#profile-block {
+			margin: 0 auto;
+			width: 50%;
+			height: 79%;
+			border: 2px solid #E0E0E0;
+			border-radius: 2px;
+		}
+
+		form {
+			text-align: center;
+			height: 100%;
+			padding: 6px 0px;
+		}
+
+		#input-grp {
+			margin: 0 auto;
+			height: 100%;
+		}
+
+		.input-field,
+		.gender-box {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-evenly;
+			border-radius: 3px;
+			transition: all 0.8s;
+			margin: 11px 1px;
+
+		}
+
+		label,
+		.gender-box label {
+			width: 20%;
+			text-align: right;
+			font-size: 18px;
+			font-weight: 400;
+			vertical-align: bottom;
+		}
+
+		.input-field input,
+		textarea {
+			width: 50%;
+			height: 32px;
+			font-size: 16px;
+			padding: 4px 6px;
+			border: 2px solid #D8D8D8;
+
+		}
+
+		textarea {
+			height: 60px;
+		}
+
+
+		.save-btn-disable {
+			cursor: none;
+			background: #eaeaea;
+		}
+
+		#email-flashmessage-block,
+		#password-flashmessage-block {
+			height: 18px;
+			width: 100%;
+			text-align: center;
+			color: orangered;
+			font-size: 15px;
+
+		}
+
+		#password-flashmessage-block {
+			font-size: 15px;
+		}
+
+		.gender-sub-box {
+			display: flex;
+			justify-content: start;
+			margin-left: 10px;
+		}
+		.radio-btn-block{
+			width:50%;
+			display:flex;
+		    flex-direction: row;
+		}
+
+		.gender-box p {
+			font-size: 14px;
+			color: rgb(50, 48, 48);
+		}
+
+		input[type=radio] {
+			margin: 0 8px -3px;
+			vertical-align: middle;
+			-webkit-transform: scale(1);
+		}
+
+		#success-flash-message {
+			height: 45px;
+			width: 100%;
+			text-align: center;
+			color: #fe7250;
+			font-size: 17px;
+			font-weight: bold;
+		}
+
+		#save-btn {
+			background: #fe7250;
+			color: #fff;
+			height: 45px;
+			width: 130px;
+			border-radius: 20px;
+			font-size: 15px;
+			padding: 2px 6px;
+			border: 0;
+			outline: 0;
+			cursor: pointer;
+			transition: all ease-in-out 1s;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="header-block">
+		<div id="first-header-block">
+			<div id="logo-block">MYFITNESSBUDDY</div>
+			<div id="navigation-block">
+				<a th:href="@{displayHomePage}">Summary</a>
+				<a th:href="@{addWorkout}">Add Workout</a>
+				<a th:href="@{statistics}">Statistics</a>
+				<a th:href="@{displayProfile}">Profile</a>
+				<a th:href="@{logOut}">Log out</a>
+			</div>
+		</div>
+		<div class="profile-header">
+			<p>Profile</p>
+		</div>
+	</div>
+	<div class="main-block">
+		<div id="profile-block">
+			<form action="saveProfileInfo" method="post" th:object="${user}">
+				<div id="input-grp">
+					<div class="input-field">
+						<label for="email">Email:</label>
+						<input type="email" th:field="*{email}" name="email" id="email" maxlength="49" required>
+					</div>
+					<div id="email-flashmessage-block">
+						<span id="email-flashmessage-sub-block"></span>
+					</div>
+					<div class="input-field">
+						<label for="password">Password:</label>
+						<input type="password" th:value="*{password}" name="password" maxlength="14" required
+							id="password">
+
+					</div>
+					<div id="password-flashmessage-block">
+						<span id="password-flashmessage-sub-block"></span>
+					</div>
+					<div class="input-field">
+						<label for="firstname">FirstName:</label>
+						<input type="text" th:field="*{firstName}" name="firstName" maxlength="29" required>
+					</div>
+					<div class="input-field">
+						<label for="lastname">LastName:</label>
+						<input type="text" th:field="*{lastName}" name="lastName" maxlength="29" required>
+					</div>
+					<div class="input-field">
+						<label for="dob">DOB:</label>
+						<input type="date" th:value="*{DOB}" name="DOB" required>
+					</div>
+					<div class="input-field">
+						<label for="address">Address:</label>
+						<textarea th:field="*{address}" name="address" maxlength="99" required></textarea>
+					</div>
+
+					<div class="input-field" id="pincode">
+						<label for="pincode">Pincode:</label>
+						<input type="text" th:field="*{pincode}" name="pincode" maxlength="7" required>
+					</div>
+					<div class="input-field" id="country">
+						<label for="country">Country:</label>
+						<input type="text" th:field="*{country}" name="country" maxlength="29" required>
+					</div>
+
+
+					<div class="gender-box">
+						<label for="gender">Gender:
+						</label>
+						<div class="radio-btn-block">
+							<div class="gender-sub-box">
+								<input type="radio" th:field="*{gender}" name="gender" value="male" id="male">
+								<label for="Male">Male</label>
+							</div>
+							<div class="gender-sub-box">
+
+								<input type="radio" th:field="*{gender}" name="gender" value="female" id="female">
+								<label for="Female">Female</label>
+							</div>
+						</div>
+					</div>
+					<div id="success-flash-message" th:text="${msg}">
+					</div>
+					<input type="submit" value="Save" id="save-btn">
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+
+</body>
+
+</html>

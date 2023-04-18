@@ -7,14 +7,14 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap"
-		rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<script th:inline="javascript">
 		console.log("Inise script tag");
 		$(function () {
 			console.log("Inside function");
 			loadWorkoutSummary();
 		});
+
 		function loadWorkoutSummary() {
 			console.log("loadWorkoutSummary");
 			$.ajax({
@@ -23,117 +23,98 @@
 				dataType: "json",
 				success: function (data) {
 					console.log("Get request success");
-					// Create a map to store the workouts by month-year
-					var workoutsByMonthYear = {};
-					let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-					// Iterate over the workout data and group by month-year
-					data.forEach(function (workout) {
+					let workoutSummary = $("#workout-summary");
+					if (data.length == 0) {
+						console.log("Insise no data block");
+						let noDataDiv = $("<div>").addClass("no-data-css").text("Start tracking your fitness journey now...");
+						workoutSummary.addClass("no-data-workout-summary");
+						workoutSummary.append(noDataDiv);
+					} else {
+						workoutSummary.addClass("data-workout-summary");
+						// Create a map to store the workouts by month-year
+						let workoutsByMonthYear = {};
+						let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+						// Iterate over the workout data and group by month-year
+						data.forEach(function (workout) {
+							let dateObj = new Date(workout.date);
+							let monthYear = dateObj.toLocaleString('default', {month: 'long', year: 'numeric'});
+							console.log(monthYear);
+							if (!workoutsByMonthYear[monthYear]) {
+								workoutsByMonthYear[monthYear] = [];
+							}
+							workoutsByMonthYear[monthYear].push(workout);
+						});
 
 
-						var dateObj = new Date(workout.date);
-						var monthYear = dateObj.toLocaleString('default', {month: 'long', year: 'numeric'});
-						console.log(monthYear);
-						if (!workoutsByMonthYear[monthYear]) {
-							workoutsByMonthYear[monthYear] = [];
-						}
-						workoutsByMonthYear[monthYear].push(workout);
-					});
-
-
-
-
-					var workoutSummary = $("#workout-summary");
-					Object.keys(workoutsByMonthYear).forEach(function (monthYear) {
-						var workoutCount = 0;
-
-						var monthHeaderDiv = $("<div>").addClass("month-header");
-
-						//update month and year
-						var monthYearDiv = $("<div>").addClass("month-year").text(monthYear);
-						monthHeaderDiv.append(monthYearDiv);
-
-
-						var monthWorkoutDiv = $("<div>").addClass("month-workout-list");
-						var workouts = workoutsByMonthYear[monthYear];
-
-						workouts.forEach(function (workout) {
-							//calculate the number of workout done for that particular month
-							workoutCount++;
-
-							var eachWorkout = $("<div>").addClass("each-workout");
-							var dateObject = new Date(workout.date);
-							dayDate = dateObject.toLocaleString('default', {month: 'long', day: 'numeric'});
-							var dayDiv = $("<div>").addClass("each-workout__dayDate__day").text(weekdays[dateObject.getDay()]);
-							var date = $("<div>").addClass("each-workout__dayDate__date").text(dayDate);
-							var dayDateDiv = $("<div>").addClass("each-workout__dayDate");
-							dayDateDiv.append(dayDiv);
-							dayDateDiv.append(date);
-
-							eachWorkout.append(dayDateDiv);
-
-
-							/*var workoutDiv = $("<div>").addClass("workout");
-							var dateDiv = $("<div>").addClass("date").text(workout.date);
-							workoutDiv.append(dateDiv);*/
-
-
-							var workoutOverviewDiv = $("<div>").addClass("each-workout__overview");
-
-							var workoutTypeDiv = $("<div>").addClass("each-workout__overview__workout-type").text(workout.workoutType + " Workout");
-							workoutOverviewDiv.append(workoutTypeDiv);
-
-							var exerciseListDiv = $("<div>").addClass("each-workout__overview__exercise-List");
-							//var setsDiv = $("<div>").addClass("sets");
-
-							//calculate the number of sets done for each exercise
-							var exerciseCount = {};
-							var exerciseSetList = {};
-							workout.sets.forEach(function (sets) {
-								if (!exerciseCount[sets.exercise.exerciseName]) {
-									exerciseCount[sets.exercise.exerciseName] = 0;
-									exerciseSetList[sets.exercise.exerciseName] = [];
-								}
-								exerciseCount[sets.exercise.exerciseName] += 1;
-								exerciseSetList[sets.exercise.exerciseName].push(sets);
-
-							});
-
-							Object.keys(exerciseCount).forEach(function (exerciseName) {
-								var exerciseSetDiv = $("<div>").addClass("each-workout__overview__exercise-List__sets");
-								var exerciseSetHoverDiv = $("<div>").addClass("each-workout__overview__exercise-List__set__hover");
-
-								var setCount = 1;
-								exerciseSetList[exerciseName].forEach(function (set) {
-
-									var setDiv = $("<div>").addClass("eachset-hover").text(exerciseName + " Set" + setCount + " Weight:" + set.weight + " Reps: " + set.reps + " Mins:" + set.minutes + " Distance: " + set.distance + " Kcal: " + set.Kcal);
-									exerciseSetHoverDiv.append(setDiv);
-									setCount++;
+						Object.keys(workoutsByMonthYear).forEach(function (monthYear) {
+							let workoutCount = 0;
+							let monthHeaderDiv = $("<div>").addClass("month-header");
+							//update month and year
+							let monthYearDiv = $("<div>").addClass("month-year").text(monthYear);
+							monthHeaderDiv.append(monthYearDiv);
+							let monthWorkoutDiv = $("<div>").addClass("month-workout-list");
+							let workouts = workoutsByMonthYear[monthYear];
+							workouts.forEach(function (workout) {
+								//calculate the number of workout done for that particular month
+								workoutCount++;
+								let eachWorkout = $("<div>").addClass("each-workout");
+								let dateObject = new Date(workout.date);
+								dayDate = dateObject.toLocaleString('default', {month: 'long', day: 'numeric'});
+								let dayDiv = $("<div>").addClass("each-workout__dayDate__day").text(weekdays[dateObject.getDay()]);
+								let date = $("<div>").addClass("each-workout__dayDate__date").text(dayDate);
+								let dayDateDiv = $("<div>").addClass("each-workout__dayDate");
+								dayDateDiv.append(dayDiv);
+								dayDateDiv.append(date);
+								eachWorkout.append(dayDateDiv);
+								/*var workoutDiv = $("<div>").addClass("workout");
+								var dateDiv = $("<div>").addClass("date").text(workout.date);
+								workoutDiv.append(dateDiv);*/
+								let workoutOverviewDiv = $("<div>").addClass("each-workout__overview");
+								let workoutTypeDiv = $("<div>").addClass("each-workout__overview__workout-type").text(workout.workoutType + " Workout");
+								workoutOverviewDiv.append(workoutTypeDiv);
+								let exerciseListDiv = $("<div>").addClass("each-workout__overview__exercise-List");
+								//var setsDiv = $("<div>").addClass("sets");
+								//calculate the number of sets done for each exercise
+								let exerciseCount = {};
+								let exerciseSetList = {};
+								workout.sets.forEach(function (sets) {
+									if (!exerciseCount[sets.exercise.exerciseName]) {
+										exerciseCount[sets.exercise.exerciseName] = 0;
+										exerciseSetList[sets.exercise.exerciseName] = [];
+									}
+									exerciseCount[sets.exercise.exerciseName] += 1;
+									exerciseSetList[sets.exercise.exerciseName].push(sets);
 
 								});
 
-
-								var data = exerciseCount[exerciseName] + "x " + exerciseName;
-								var exerciseNameDiv = $("<div>").text(data);
-
-								exerciseSetDiv.append(exerciseSetHoverDiv);
-								exerciseSetDiv.append(exerciseNameDiv);
-
-								exerciseListDiv.append(exerciseSetDiv);
-
-
+								Object.keys(exerciseCount).forEach(function (exerciseName) {
+									let exerciseSetDiv = $("<div>").addClass("each-workout__overview__exercise-List__sets");
+									let exerciseSetHoverDiv = $("<div>").addClass("each-workout__overview__exercise-List__set__hover");
+									let setCount = 1;
+									exerciseSetList[exerciseName].forEach(function (set) {
+										let setDiv = $("<div>").addClass("eachset-hover").text(exerciseName + " Set" + setCount + " Weight:" + set.weight + " Reps: " + set.reps + " Mins:" + set.minutes + " Distance: " + set.distance + " Kcal: " + set.Kcal);
+										exerciseSetHoverDiv.append(setDiv);
+										setCount++;
+									});
+									let data = exerciseCount[exerciseName] + "x " + exerciseName;
+									let exerciseNameDiv = $("<div>").text(data);
+									exerciseSetDiv.append(exerciseSetHoverDiv);
+									exerciseSetDiv.append(exerciseNameDiv);
+									exerciseListDiv.append(exerciseSetDiv);
+								});
+								workoutOverviewDiv.append(exerciseListDiv);
+								eachWorkout.append(workoutOverviewDiv);
+								let durationDiv = $("<div>").addClass("each-workout__duration").text(workout.duration + " min");
+								eachWorkout.append(durationDiv);
+								monthWorkoutDiv.append(eachWorkout);
 							});
-							workoutOverviewDiv.append(exerciseListDiv);
-							eachWorkout.append(workoutOverviewDiv);
-							var durationDiv = $("<div>").addClass("each-workout__duration").text(workout.duration + " min");
-							eachWorkout.append(durationDiv);
-							monthWorkoutDiv.append(eachWorkout);
-						});
-						var workoutCountDiv = $("<div>").text(workoutCount + " Workouts");
-						monthHeaderDiv.append(workoutCountDiv);
-						workoutSummary.append(monthHeaderDiv);
-						workoutSummary.append(monthWorkoutDiv);
+							let workoutCountDiv = $("<div>").text(workoutCount + " Workouts");
+							monthHeaderDiv.append(workoutCountDiv);
+							workoutSummary.append(monthHeaderDiv);
+							workoutSummary.append(monthWorkoutDiv);
 
-					});
+						});
+					}
 				},
 				error: function () {
 					console.log("Error retrieving workout data.");
@@ -160,16 +141,14 @@
 			display: flex;
 			flex-direction: column;
 			justify-content: space-around;
-			  z-index: 99;
+			z-index: 99;
 		}
-
 		#first-header-block {
 			display: flex;
 			height: 50px;
 			background-color: rgb(17, 15, 15);
 			border-bottom: 1px solid #dddddd;
 		}
-
 		#navigation-block {
 			display: flex;
 			justify-content: space-between;
@@ -179,14 +158,12 @@
 			vertical-align: middle;
 			margin-right: 20px;
 		}
-
 		#navigation-block a {
 			text-decoration: none;
 			letter-spacing: 0.5px;
 			line-height: 1px;
 			color: white;
 		}
-
 		#logo-block {
 			color: white;
 			font-family: 'Oswald', sans-serif;
@@ -200,7 +177,6 @@
 			padding-left: 20px;
 			width: 45%;
 		}
-
 		.summary-header {
 			display: flex;
 			justify-content: space-between;
@@ -210,25 +186,25 @@
 			height: 100px;
 			background-color: white;
 		}
-
 		.summary-header p {
-			font-size: 28px;
-			font-weight: 300;
+			font-size: 32px;
+			font-weight: 250;
 		}
-
-
-
 		.main-block {
 			margin-top: 152px;
-
 		}
-
-		#workout-summary {
+		.no-data-workout-summary {
+			text-align: center;
+		}
+		.no-data-css {
+			font-size: 25px;
+			font-weight: bold;
+		}
+		.data-workout-summary {
 			margin: 10px auto;
 			width: 75%;
 			border: 1px solid black;
 		}
-
 		.month-header {
 			display: flex;
 			justify-content: space-between;
@@ -238,99 +214,83 @@
 			font-size: 15px;
 			background-color: #f6f9fc;
 			font-weight: bold;
-
+			padding-left: 25px;
+			padding-right: 25px;
 		}
-
 		.each-workout {
 			display: flex;
 			justify-content: space-between;
 			border-bottom: 1px solid #dddddd;
+			padding-left: 25px;
+			padding-right: 25px;
 		}
-
 		.each-workout:hover {
-
-
 			/*cursor: pointer;
 			background-color: #f6f9fc;*/
 		}
-
 		.month-workout-list {
 			display: flex;
 			flex-direction: column;
 		}
-
 		.each-workout__dayDate {
 			display: flex;
 			flex-direction: column;
-
 		}
-
 		.each-workout__dayDate__day {
 			color: darkgray;
 		}
-
 		.each-workout__dayDate__date {
-
 			font-weight: 500;
 		}
-
 		.each-workout__overview {
 			display: flex;
 			flex-direction: column;
-			justify-content:start;
+			justify-content: start;
 		}
-
 		.each-workout__overview__workout-type {
 			font-size: 22px;
 			font-weight: 500;
 		}
-
 		.each-workout__overview__exercise-List {
 			display: flex;
 			flex-direction: column;
 			font-style: italic;
 			font-weight: 400;
 		}
-
 		.each-workout__overview__exercise-List__sets {
 			position: relative;
 			cursor: pointer;
 			transition: all 0.5s;
 		}
-
 		.eachset-hover {
 			font-size: 14px;
 		}
-
 		.each-workout__overview__exercise-List__set__hover {
 			position: absolute;
 			top: 0;
-			left: 80%;
+			left: 98%;
 			transform: translateX(10px);
 			width: max-content;
 			text-align: center;
 			border-radius: 5px;
-			padding: 5px;
+			padding: 13px;
 			visibility: hidden;
 			opacity: 0;
 			transition: all 0.5s;
-			background-color: grey;
+			background-color: #DCDCDC;
 			color: #000;
 			z-index: 1;
 		}
-
 		.each-workout__overview__exercise-List__set__hover:before {
-
 			position: absolute;
 			content: "";
 			height: 10px;
 			width: 10px;
-			background: grey;
-			bottom: 50%;
+			background: #DCDCDC;
+			bottom: 60%;
 			left: 0px;
 			transform: translateX(-50%) rotate(45deg);
 		}
-
 		.each-workout__overview__exercise-List__sets:hover .each-workout__overview__exercise-List__set__hover {
 			visibility: visible;
 			opacity: 1;
@@ -346,7 +306,7 @@
 				<a th:href="@{displayHomePage}">Summary</a>
 				<a th:href="@{addWorkout}">Add Workout</a>
 				<a th:href="@{statistics}">Statistics</a>
-				<a>Profile</a>
+				<a th:href="@{displayProfile}">Profile</a>
 				<a th:href="@{logOut}">Log out</a>
 			</div>
 		</div>
@@ -355,15 +315,8 @@
 		</div>
 	</div>
 	<div class="main-block">
-
 		<div id="workout-summary">
-
-
 		</div>
-
 	</div>
-
-
 </body>
-
 </html>

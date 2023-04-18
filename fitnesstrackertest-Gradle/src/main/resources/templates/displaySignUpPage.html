@@ -1,5 +1,4 @@
 <html xmlns:th="https://www.thymeleaf.org/">
-
 <head>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 	<meta charset="UTF-8" />
@@ -9,83 +8,64 @@
 	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<title>Sign Up Page</title>
 	<script>
-
-
 		$(document).ready(function () {
-			var emailInput = $('#email');
-			var signupButton = $('#signUpButton');
-			var emailMessageBlock = $('#emailFlashMessageSubBlock');
-			var passwordMessageBlock = $('#passwordFlashMessageBlock');
+			let emailInput = $('#email');
+			let signupButton = $('#signup-btn');
+			let emailMessageBlock = $('#email-flash-message-sub-block');
+			let passwordMessageBlock = $('#password-flash-message-sub-block');
 			emailInput.on('input', function () {
-				var email = emailInput.val();
+				let email = emailInput.val();
 				$.get('checkEmail', {email: email}, function (response) {
-					var emailExists = response.exists;
+					let emailExists = response.exists;
 					if (emailExists) {
 						signupButton.attr('disabled', true);
-						signupButton.addClass("signUpButtonDisableCss");
+						signupButton.addClass("signup-btn-disableCSS");
 						emailMessageBlock.text("Username already exists.Please choose different username");
 					} else {
 						signupButton.attr('disabled', false);
 						emailMessageBlock.text("");
 					}
-
 				});
 			});
 
-			var passwordInput = $('#password');
+			let passwordInput = $('#password');
 			passwordInput.on('input', function () {
-				var password = passwordInput.val();
+				let password = passwordInput.val();
 				$.get('validatePassword', {password: password}, function (response) {
-					var message = response.msg;
+					let message = response.msg;
 					console.log(message);
 					console.log("response length is" + message.length);
 					if (message.length == 0) {
 						signupButton.attr('disabled', false);
 						passwordMessageBlock.text("");
-
 					} else {
 						signupButton.attr('disabled', true);
-						signupButton.addClass("signUpButtonDisableCss");
+						signupButton.addClass("signup-btn-disableCSS");
 						passwordMessageBlock.text(message);
-
 					}
-
 				});
-
-
-
 			});
-
 		});
-
-
 		setTimeout(function () {
-
-			let sucessMessageBlock = document.getElementById("sucessMessageBlock");
+			let sucessMessageBlock = document.getElementById("success-message-block");
 			sucessMessageBlock.innerText = "";
 		}, 3000);
-
 	</script>
-
 	<style>
 		* {
 			margin: 0;
 			padding: 0;
-
 			box-sizing: border-box;
 			font-family: 'Oswald', sans-serif;
 		}
-
 		#container {
 			position: relative;
 			width: 100%;
 			height: 100vh;
-			background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(Images/e9.jpg);
+			background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(FitnessTrackerTest-Images/Signup-Background-Img.jpg);
 			background-position: center;
 			background-size: cover;
-
 		}
-
 		#form-box {
 			position: absolute;
 			width: 500px;
@@ -97,18 +77,14 @@
 			background-color: #fff;
 			padding: 30px 60px 30px;
 			text-align: center;
-
 		}
-
 		#form-box h1 {
 			font-size: 30px;
 			color: #fe7250;
 			font-weight: 700;
 			margin-bottom: 2px;
 			margin-top: -20px;
-
 		}
-
 		#underline-box {
 			height: 2px;
 			display: block;
@@ -116,11 +92,7 @@
 			margin: 2px auto 20px;
 			padding: 0;
 			border: 2px solid #fe7250;
-
 		}
-
-
-
 		.input-field {
 			/*have colored the whole div light grey*/
 			background: #eaeaea;
@@ -131,10 +103,7 @@
 			max-height: 48px;
 			overflow: hidden;
 			transition: all 0.8s;
-
-
 		}
-
 		input {
 			width: 100%;
 			/* can aslo give same color as input-field*/
@@ -143,14 +112,10 @@
 			outline: 0;
 			padding: 18px 15px;
 		}
-
-
-
 		.input-field i {
 			margin-left: 15px;
 			color: #999;
 		}
-
 		form p {
 			text-align: left;
 			font-size: 13px;
@@ -159,48 +124,32 @@
 		form a {
 			text-decoration: none;
 			color: #3c00a0;
-
 		}
-
 		form a:hover {
 			color: Red;
 		}
-
-		#emailFlashMessageBlock,
-		#passwordFlashMessageBlock,
-		#firstNameFlashMessageBlock,
-		#lastNameFlashMessageBlock,
-		#DOBFlashMessageBlock,
-		#addressFlashMessageBlock {
-
+		.flash-message{
 			height: 16px;
 			width: 100%;
 			margin-top: -5px;
 			text-align: left;
 			color: orangered;
+		}
+		#email-flash-message-block{
 			font-size: 11px;
-
-
 		}
-
-		#passwordFlashMessageBlock {
+		#password-flash-message-block {
 			font-size: 9.8px;
-
-
 		}
-
-
 		.address-box,
 		.gender-box {
 			display: flex;
 		}
-
 		.address-box {
 			justify-content: space-between;
 			vertical-align: middle;
 			margin-top: 4px;
 		}
-
 		.address-box .input-field {
 			margin-top: 0;
 		}
@@ -210,55 +159,43 @@
 			vertical-align: middle;
 			margin-top: 7px;
 		}
-
-
-
 		.gender-sub-box {
 			display: flex;
 			justify-content: space-around;
 			margin-left: 10px;
 		}
-
 		.gender-box p {
 			font-size: 14px;
 			color: rgb(50, 48, 48);
 		}
 
 		input[type=radio] {
-
 			margin: 0 8px -3px;
 			vertical-align: middle;
 			-webkit-transform: scale(1);
 		}
-
 		.gender-box label {
 			font-size: 14px;
 		}
-
 		.tikbox {
 			display: flex;
 			margin-top: 20px;
 		}
-
 		.tikbox label {
 			font-size: 13px;
 			padding-left: 0;
 			margin-left: 0;
 		}
-
 		#checkbox {
 			margin-right: 3px;
 			-webkit-transform: scale(0.7);
 			color: rgb(50, 48, 48);
 			width: 5%;
 		}
-
-
 		#buttonGrp {
 			margin: 11px auto;
 		}
-
-		#signUpButton {
+		#signup-btn {
 			background: #fe7250;
 			color: #fff;
 			height: 45px;
@@ -269,41 +206,29 @@
 			border: 0;
 			outline: 0;
 			cursor: pointer;
-
 			transition: all ease-in-out 1s;
 		}
-
-		#signUpButton :hover {}
-
+		#signup-btn :hover {}
 		#message-box {}
-
-		#SignInLink {
+		#signin-link {
 			margin: 7px auto;
 			text-align: center;
 		}
-
-		#SignInLink p {
+		#signin-link p {
 			font-weight: normal;
 			font-size: 14px;
-
 		}
-
-		#SignInLink a {
+		#signin-link a {
 			text-decoration: none;
 		}
-
-		#SignInLink a:hover {
+		#signin-link a:hover {
 			color: #fe7250;
-
 		}
-
-		.signUpButtonDisableCss {
+		.signup-btn-disableCSS {
 			cursor: none;
 			background: #eaeaea;
-
 		}
-
-		#sucessMessageBlock {
+		#success-message-block {
 			height: 16px;
 			width: 100%;
 			margin-top: -12px;
@@ -314,13 +239,12 @@
 		}
 	</style>
 </head>
-
 <body>
 	<div id="container">
 		<div id="form-box">
 			<h1 id="title">Sign Up</h1>
 			<span id="underline-box"></span>
-			<div id="sucessMessageBlock" th:text="${msg}"></div>
+			<div id="success-message-block" th:text="${msg}"></div>
 			<div id="inputGrp">
 				<form action="registerUser" method="post">
 					<div id="inputGrp">
@@ -328,95 +252,80 @@
 							<i class="fa-solid fa-envelope"></i>
 							<input type="email" placeholder="Email" name="email" id="email" maxlength="49" required>
 						</div>
-						<div id="emailFlashMessageBlock">
-							<span id="emailFlashMessageSubBlock"></span>
+						<div id="email-flash-message-block" class="flash-message">
+							<span id="email-flash-message-sub-block"></span>
 						</div>
 						<div class="input-field">
 							<i class="fa-solid fa-lock"></i>
 							<input type="password" placeholder="Password" name="password" maxlength="14" required
 								id="password">
 						</div>
-						<div id="passwordFlashMessageBlock">
-							<span id="passwordFlashMessageSubBlock"></span>
+						<div id="password-flash-message-block" class="flash-message">
+							<span id="password-flash-message-sub-block"></span>
 						</div>
 						<div class="input-field" id="firstnameField">
 							<i class="fa-solid fa-user"></i>
 							<input type="text" placeholder="FirstName" name="firstName" maxlength="29" required>
 						</div>
-						<div id="firstNameFlashMessageBlock">
+						<div id="firstname-flash-message-block" class="flash-message">
 							<span></span>
 						</div>
 						<div class="input-field" id="lastnameField">
 							<i class="fa-solid fa-user"></i>
 							<input type="text" placeholder="LastName" name="lastName" maxlength="29" required>
 						</div>
-						<div id="lastNameFlashMessageBlock">
+						<div id="lastname-flash-message-block" class="flash-message">
 							<span></span>
 						</div>
-
 						<div class="input-field" id="DOB">
 							<i class="fa-solid fa-calendar-days"></i>
 							<input type="date" placeholder="DOB" name="DOB" required>
 						</div>
-						<div id="DOBFlashMessageBlock">
+						<div id="DOB-flash-message-block" class="flash-message">
 							<span></span>
 						</div>
 						<div class="input-field" id="address">
 							<i class="fa-solid fa-address-card"></i>
 							<input type="text" placeholder="Address" name="address" maxlength="99" required>
 						</div>
-						<div id="addressFlashMessageBlock">
+						<div id="address-flash-message-block" class="flash-message">
 							<span></span>
 						</div>
 						<div class="address-box">
 							<div class="input-field" id="pincode">
 								<i class="fa-solid fa-location-dot"></i>
-								<input type="text" placeholder="Pincode" name="pincode" maxlength="7" required>
+								<input type="number" placeholder="Pincode" name="pincode" min="1" required>
 							</div>
-
 							<div class="input-field" id="country">
 								<i class="fa-solid fa-globe"></i>
 								<input type="text" placeholder="Country" name="country" maxlength="29" required>
 							</div>
-
 						</div>
-
 						<div class="gender-box">
 							<div>
 								<p>Gender:</p>
 							</div>
 							<div class="gender-sub-box">
-
 								<input type="radio" name="gender" value="male" id="male">
 								<label for="Male">Male</label>
 							</div>
 							<div class="gender-sub-box">
-
 								<input type="radio" name="gender" value="female" id="female">
 								<label for="Female">Female</label>
 							</div>
-
 						</div>
-
 						<div class="tikbox">
 							<input id="checkbox" type="checkbox" required>
 							<label for="checkbox">I accept the <a href="#">Terms and Conditions</a>.</label>
 						</div>
 						<div id="buttonGrp">
-							<input type="submit" value="Sign Up" id="signUpButton">
+							<input type="submit" value="Sign Up" id="signup-btn">
 						</div>
 				</form>
-
-
 			</div>
-			<div id="SignInLink">
+			<div id="signin-link">
 				<p>Already a User? <a th:href="@{SignInPage}">Sign In</a></p>
 			</div>
-
 		</div>
-
-
-
 </body>
-
 </html>

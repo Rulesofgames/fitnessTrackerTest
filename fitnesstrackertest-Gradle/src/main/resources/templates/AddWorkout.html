@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/">
-
 <head>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 	<meta charset="UTF-8" />
@@ -16,7 +15,6 @@
 			box-sizing: border-box;
 			font-family: 'Oswald', sans-serif;
 		}
-
 		#header-block {
 			position: fixed;
 			top: 0;
@@ -28,14 +26,12 @@
 			justify-content: space-around;
 			z-index: 99;
 		}
-
 		#first-header-block {
 			display: flex;
 			height: 50px;
 			background-color: rgb(17, 15, 15);
 			border-bottom: 1px solid #dddddd;
 		}
-
 		#navigation-block {
 			display: flex;
 			justify-content: space-between;
@@ -45,14 +41,12 @@
 			vertical-align: middle;
 			margin-right: 20px;
 		}
-
 		#navigation-block a {
 			text-decoration: none;
 			letter-spacing: 0.5px;
 			line-height: 1px;
 			color: white;
 		}
-
 		#logo-block {
 			color: white;
 			font-family: 'Oswald', sans-serif;
@@ -66,7 +60,6 @@
 			padding-left: 20px;
 			width: 45%;
 		}
-
 		.add-workout-header {
 			display: flex;
 			justify-content: space-between;
@@ -76,12 +69,10 @@
 			height: 100px;
 			background-color: white;
 		}
-
 		.add-workout-header p {
 			font-size: 32px;
-			font-weight: 200;
+			font-weight: 250;
 		}
-
 		#add-workout-btn {
 			margin-right: 25px;
 			font-size: 14px;
@@ -92,7 +83,6 @@
 			color: #fe7250;
 			background-color: #fff;
 		}
-
 		#whole-workout-modal-window,
 		#whole-exercise-modal-window,
 		#whole-editWorkout-modal-window,
@@ -106,13 +96,11 @@
 			background-color: rgba(0, 0, 0, 0.8);
 			z-index: 100;
 		}
-
-		.addExerciseModal,
 		.add-workout-modal,
 		.edit-workout-modal {
 			margin: 150px auto;
 			width: 35%;
-			height: 53%;
+			height: 60%;
 			border: 1px solid black;
 			border-radius: 3px;
 			box-shadow: 0px 0 px 2px;
@@ -120,7 +108,6 @@
 			animation-name: modalSlideUp;
 			animation-duration: 1s;
 		}
-
 		.delete-workout-modal {
 			margin: 260px auto;
 			width: 30%;
@@ -132,41 +119,32 @@
 			animation-name: modalSlideUp;
 			animation-duration: 1s;
 		}
-
 		#delete-workout__form__confirmMessage {
 			text-align: center;
 		}
-
 		.modal-header {
 			background: white;
 			text-align: center;
 			padding: 5px 5px;
 			height: 17%;
 		}
-
 		.modal-header h2 {
 			color: #fe7250;
 			font-size: 30px;
 			font-weight: 700;
 		}
-
-		#edit-workout-modal__formbox,
-		#add-workout-modal__formbox {}
-
 		#delete-workout-modal__formbox {
 			padding-top: 40px;
 		}
-
-		#close-exercise-modal,
 		#close-workout-modal,
 		#close-deleteworkout-modal,
 		#close-editworkout-modal {
 			float: right;
-			padding-right: 5px;
-			padding-bottom: 3px;
 			color: #a9a5bf;
+			padding-right:2px;
+			margin-bottom:3px;
+			
 		}
-
 		#close-exercise-modal:hover,
 		#close-workout-modal:hover,
 		#close-deleteworkout-modal:hover,
@@ -174,7 +152,6 @@
 			cursor: pointer;
 			color: #333;
 		}
-
 		.input-field {
 			/*have colored the whole div light grey
             background: #eaeaea;*/
@@ -190,24 +167,18 @@
 			display: flex;
 			justify-content: space-between;
 		}
-
 		.input-field label {
 			padding-left: 60px;
 			margin-left: 55px;
 		}
-
 		.input-field input {
 			padding-left: -30px;
 			margin-left: -10px;
 			width: 30%;
 		}
-
 		#input-field-textarea {
 			height: 43px;
 		}
-
-		#input-field-textarea input[type=textarea] {}
-
 		#add-workout-modal__formbox__warning,
 		#edit-workout-modal__formbox__warning {
 			width: max-content;
@@ -215,12 +186,10 @@
 			margin: 0 auto;
 			color: #e42525;
 		}
-
 		.buttnGrp {
 			margin: 11px auto;
 			text-align: Center;
 		}
-
 		.buttnGrp input[type=submit],
 		#cancel-deleteworkout-btn {
 			background: #fe7250;
@@ -237,23 +206,19 @@
 			margin: 10px auto;
 			transition: all ease-in-out 1s;
 		}
-
 		.table-section {
 			width: 100%;
 			margin-top: 148px;
 		}
-
 		table {
 			display: table;
 			width: 100%;
 			table-layout: fixed;
 			border-collapse: collapse;
 		}
-
 		thead {
 			background-color: #fe7250;
 		}
-
 		thead th {
 			position: sticky;
 			top: 148px;
@@ -261,7 +226,6 @@
 			background-color: #f6f9fc;
 			font-size: 15px;
 		}
-
 		th,
 		td {
 			border-bottom: 1px solid #dddddd;
@@ -269,18 +233,15 @@
 			word-break: break-all;
 			text-align: center;
 		}
-
 		tr {
 			width: 100%;
 			height: 60px;
 		}
-
 		tbody tr:hover {
 			color: #fe7250;
 			cursor: pointer;
 			background-color: #f6f9fc;
 		}
-
 		button {
 			outline: none;
 			border: none;
@@ -289,32 +250,22 @@
 			padding: 5px;
 			color: #ffffff;
 		}
-
 		.edit-workout-button {
 			background-color: #0298cf;
 		}
-
 		.delete-workout-button {
 			background-color: #dc3545;
 		}
-
 		.view-workoutLog-button {
 			background-color: rgb(52, 160, 103);
 		}
-
-
-		.notesColumn {}
-
 		td button {
 			margin-left: 4px;
 			margin-right: 4px;
 		}
-
-
 		.fas {
 			font-weight: 900;
 		}
-
 		.icon-box {
 			position: relative;
 			cursor: pointer;
@@ -322,8 +273,6 @@
 			display: inline-block;
 			padding: 5px 3px;
 		}
-
-
 		.icon-box__hovercontent {
 			position: absolute;
 			top: 100%;
@@ -336,45 +285,37 @@
 			visibility: hidden;
 			opacity: 0;
 			transition: all 0.5s;
-			background-color: grey;
+			background-color: #A8A8A8;
 			color: #000;
 			z-index: 1;
-
 		}
-
 		.icon-box__hovercontent:before {
 			position: absolute;
 			content: "";
 			height: 10px;
 			width: 10px;
-			background: grey;
+			background: #A8A8A8;
 			bottom: 85%;
 			left: 45%;
 			transform: translateX(50%) rotate(45deg);
 		}
-
 		.icon-box__hovercontent p {
 			margin: 0;
 		}
-
 		.icon-box:hover .icon-box__hovercontent {
 			visibility: visible;
 			opacity: 1;
 		}
-
-
 		@keyframes modalSlideUp {
 			0% {
 				transform: translateY(1500px);
 			}
-
 			100% {
 				transform: translateY(0px);
 			}
 		}
 	</style>
 </head>
-
 <body>
 	<div id="header-block">
 		<div id="first-header-block">
@@ -383,7 +324,7 @@
 				<a th:href="@{displayHomePage}">Summary</a>
 				<a th:href="@{addWorkout}">Add Workout</a>
 				<a th:href="@{statistics}">Statistics</a>
-				<a>Profile</a>
+				<a th:href="@{displayProfile}">Profile</a>
 				<a th:href="@{logOut}">Log out</a>
 			</div>
 		</div>
@@ -395,6 +336,7 @@
 		</div>
 	</div>
 	<div class="main-block">
+		<!--Add workout-->
 		<div id="whole-workout-modal-window">
 			<div class="add-workout-modal">
 				<div class="modal-header">
@@ -439,59 +381,7 @@
 
 			</div>
 		</div>
-		<!--Add Exercise
-		<div id="whole-exercise-modal-window">
-			<div class="addExerciseModal">
-				<div class="modalContent">
-					<div class="modalHeader">
-						<span id="close-exercise-modal">&times;</span>
-						<h2 id="">Add Exercise</h2>
-					</div>
-					<div id="">
-						<form action="saveSet" method="post">
-							Select Exercise:<select name="exerciseId">
-								<option value="">Select Exercise</option>
-								<option th:each="exercise:${exerciseList}" th:value="${exercise.id}"
-									th:text="${exercise.exerciseName}"></option>
-							</select>
-							<div class="input-field">
-								<label for="weight">Weight:</label>
-								<input type="number" id="weight" name="weight" required>
-							</div>
-							<div class="input-field">
-								<label for="reps">Reps:</label>
-								<input type="number" id="reps" name="reps" required>
-							</div>
-							<div class="input-field">
-								<label for="reps">Minutes:</label>
-								<input type="number" id="minutes" name="minutes" required>
-							</div>
-							<div class="input-field">
-								<label for="reps">Distance:</label>
-								<input type="number" id="distance" name="distance" required>
-							</div>
-							<div class="input-field">
-								<label for="reps">Kcal:</label>
-								<input type="number" id="Kcal" name="Kcal" required>
-							</div>
-							<div class="input-field">
-								<label for="notes">Notes:</label>
-								<textarea id="notes" name="notes"></textarea>
-							</div>
-
-
-							<input type="hidden" name="workoutId">
-
-							<div class="buttnGrp">
-								<input type="Submit" value="Submit">
-							</div>
-						</form>
-
-					</div>
-				</div>
-			</div>
-
-		</div>-->
+		
 		<!--edit workout-->
 		<div id="whole-editWorkout-modal-window">
 			<div class="edit-workout-modal">
@@ -535,7 +425,7 @@
 			</div>
 		</div>
 
-		//delete workout
+		<!--delete workout-->
 		<div id="whole-deleteWorkout-modal-window">
 			<div class="delete-workout-modal">
 				<div class="modal-header">
@@ -612,25 +502,20 @@
 		</div>
 	</div>
 	<script>
-		console.log("Inside script");
 		//Adding workout
 		let workoutModal = document.getElementById("whole-workout-modal-window");
 		let openWorkoutBtn = document.getElementById("add-workout-btn");
 		let closeWorkoutModal = document.getElementById("close-workout-modal");
-
 		openWorkoutBtn.addEventListener("click", function (event) {
 			workoutModal.style.display = 'block';
 		});
-
 		closeWorkoutModal.addEventListener("click", function () {
 			workoutModal.style.display = 'none';
 		});
-
 		let today = new Date().toISOString().substr(0, 10);
-
+		
 		// Set the max attribute of the date input field to today's date
 		document.getElementById("add-workout-date").setAttribute("max", today);
-
 		//start time should be less than end time when user tries to add new workout
 		let addWorkoutStartTimeInput = document.getElementById('add-workout-startTime');
 		let addWorkoutEndTimeInput = document.getElementById('add-workout-endTime');
@@ -643,28 +528,23 @@
 			let [endHour, endMinute] = addWorkoutEndTimeInput.value.split(':');
 			let startTime = new Date(`1970-01-01T${startHour}:${startMinute}`);
 			let endTime = new Date(`1970-01-01T${endHour}:${endMinute}`);
-
 			// Compare the times
 			if (startTime >= endTime) {
 				addWorkoutTimeWarningMessage.innerText = 'Start time must be less than end time';
 				event.preventDefault(); // Prevent form submission
 				setTimeout(function () {
 					addWorkoutTimeWarningMessage.innerText = '';
-
 				}, 3000);
 			} else {
 				addWorkoutTimeWarningMessage.innerText = ''; // Clear any previous error messages
 			}
 		});
-
 		//Edit workout
 		let editWorkoutModal = document.getElementById("whole-editWorkout-modal-window");
 		let editWorkoutButtons = document.querySelectorAll(".edit-workout-button");
 		let closeEditWorkoutModal = document.getElementById("close-editworkout-modal");
 		let editWorkoutTimeWarningMessage = document.getElementById("edit-workout-modal__formbox__warning");
-
 		editWorkoutButtons.forEach(function (button) {
-
 			button.addEventListener("click", function () {
 				console.log("Inside edit button event");
 				editWorkoutModal.style.display = "block";
@@ -692,7 +572,6 @@
 				let notes = button.getAttribute("data-workout-notes");
 				let workoutNotesInput = document.getElementById("edit-workout-notes");
 				workoutNotesInput.value = notes;
-
 			});
 
 		});
@@ -702,10 +581,8 @@
 
 		});
 		 
-
 		// Set the max attribute of the date input field to today's date
 		document.getElementById("edit-workout-date").setAttribute("max", today);
-
 
 		//start time should be less than end time when you edit workout info
 		const editWorkoutStartTimeInput = document.getElementById('edit-workout-startTime');
@@ -718,14 +595,12 @@
 			const [endHour, endMinute] = editWorkoutEndTimeInput.value.split(':');
 			const startTime = new Date(`1970-01-01T${startHour}:${startMinute}`);
 			const endTime = new Date(`1970-01-01T${endHour}:${endMinute}`);
-
 			// Compare the times
 			if (startTime >= endTime) {
 				editWorkoutTimeWarningMessage.innerText = 'Start time must be less than end time';
 				event.preventDefault(); // Prevent form submission
 				setTimeout(function () {
 					editWorkoutTimeWarningMessage.innerText = '';
-
 				}, 3000);
 			} else {
 				editWorkoutTimeWarningMessage.innerText = ''; // Clear any previous error messages
@@ -737,7 +612,6 @@
 		let deleteWorkoutButtons = document.querySelectorAll(".delete-workout-button");
 		let closeDeleteWorkoutModal = document.getElementById("close-deleteworkout-modal");
 		let cancelDeleteWorkout = document.getElementById("cancel-deleteworkout-btn");
-
 		deleteWorkoutButtons.forEach(function (button) {
 			button.addEventListener("click", function () {
 				console.log("Inside delete workout button event");
@@ -758,10 +632,7 @@
 		});
 
 		window.addEventListener("click", function (e) {
-            /*if (e.target == exerciseModal) {
-                console.log("Inside window event listener");
-                exerciseModal.style.display = 'none';
-            } */if (e.target == workoutModal) {
+           if (e.target == workoutModal) {
 				console.log("Inside window event listener");
 				workoutModal.style.display = 'none';
 			} else if (e.target == editWorkoutModal) {
@@ -771,10 +642,7 @@
 				console.log("Inside window event listener");
 				deleteWorkoutModal.style.display = 'none';
 			}
-
 		});
-
 	</script>
 </body>
-
 </html>
