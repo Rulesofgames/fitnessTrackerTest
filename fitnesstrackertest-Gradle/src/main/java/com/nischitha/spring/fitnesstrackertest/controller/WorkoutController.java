@@ -49,7 +49,7 @@ public class WorkoutController {
 	ExerciseRepository exerciseRepo;
 
 	@RequestMapping("addWorkout")
-	public String addWorkout(ModelMap modelmap,HttpSession session) {
+	public  String addWorkout(ModelMap modelmap,HttpSession session) {
 		LOGGER.info("Inside addWorkout,Start");
 		int userId=(int)session.getAttribute("userId");
 		// modelmap.addAttribute("userId",id);
@@ -112,14 +112,12 @@ public class WorkoutController {
 		Workout workout = workoutRepo.findById(workoutId).get();
 		sets.setWorkout(workout);
 		sets.setExercise(exercise);
-		setsRepo.save(sets);
-
+		Sets savedSet=setsRepo.save(sets);
 		return "redirect:/viewWorkoutLog?id="+workoutId;
 	}
 
 	@GetMapping("/viewWorkoutLog")
 	public String viewWorkoutLog(@RequestParam("id") Integer workoutId, ModelMap modelmap) {
-
 		LOGGER.info("Inside viewWorkoutLog");
 		modelmap.addAttribute("exerciseList", exerciseRepo.findAll());
 		modelmap.addAttribute("setsList", setsRepo.findAllByWorkoutId(workoutId,Sort.by(new Sort.Order(Direction.DESC, "exercise"))));
@@ -130,7 +128,6 @@ public class WorkoutController {
 	@PostMapping("deleteWorkout")
 	public String deleteWorkout(@RequestParam("id") Integer workoutId) {
 		workoutRepo.deleteById(workoutId);
-
 		return "redirect:addWorkout";
 	}
 
@@ -154,7 +151,6 @@ public class WorkoutController {
 		int userId=(int)session.getAttribute("userId");
 		List<Workout> list=workoutRepo.findByUserId(userId,Sort.by(new Sort.Order(Direction.DESC, "date"), new Sort.Order(Direction.DESC, "startTime")));
 		return list;
-		
 	}
 	
 	@RequestMapping("displayHomePage")

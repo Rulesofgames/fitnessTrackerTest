@@ -30,11 +30,12 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
+	@Autowired
 	UserRepository userRepo;
 
 	@Autowired
 	EmailUtil emailUtil;
+	
 
 	@Autowired
 	FitnessTrackerService fitnessTrackerServiceImpl;
@@ -156,7 +157,6 @@ public class UserController {
 		int userId = (int) session.getAttribute("userId");
 		User user = userRepo.findById(userId).get();
 		modelmap.addAttribute("user", user);
-
 		return "displayProfileInfo";
 	}
 
