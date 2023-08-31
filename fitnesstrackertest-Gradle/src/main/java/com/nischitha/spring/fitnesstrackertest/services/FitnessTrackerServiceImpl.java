@@ -30,11 +30,17 @@ public class FitnessTrackerServiceImpl implements FitnessTrackerService {
 
 	@Override
 	public Map<String, String> checkPassword(String password) {
-
+ 
+		
 		Map<String, String> response = new HashMap<>();
+		//Check to verify if password length is zero
+		 if(password.length()==0) {
+			 response.put("msg", "");
+			 return response;
+		 }
 		boolean isUpperCase = false, isSpecialCharacter = false, isDigit = false, isLowerCase = false;
 		boolean passwordLengthOk = (password.length() >= 8) ? true : false;
-
+		
 		for (char c : password.toCharArray()) {
 			if (Character.isLetter(c) && Character.isUpperCase(c)) {
 				isUpperCase = true;

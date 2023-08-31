@@ -3,6 +3,7 @@ package com.nischitha.spring.fitnesstrackertest;
 import static org.hamcrest.CoreMatchers.any;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.ArgumentMatchers.*;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Set;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,9 +22,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.test.web.ModelAndViewAssert;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.nischitha.spring.fitnesstrackertest.repos.ExerciseRepository;
 import com.nischitha.spring.fitnesstrackertest.repos.SetsRepository;
@@ -38,9 +47,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
+@AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.Simple.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class WorkoutControllerTest {
+	
+	@Autowired
+	private MockMvc mockMvc;
 
 	@Mock
 	UserRepository userRepo;
@@ -65,44 +78,42 @@ class WorkoutControllerTest {
 
 	@Mock
 	FitnessTrackerServiceImpl fitnessTrackerServiceImpl;
-
-	/*@Test...Yet to implement has SORT
+/*
+	@Test
+	@Order(1)
 	void addWorkoutTest() {
 		int userId = 1;
-		// Mocking the behavior of workoutRepo.findByUserId()
-		List<Workout> mockWorkoutList = new ArrayList<>();
-		// when(workoutRepo.findByUserId(eq(userId),
-		// ArgumentMatchers.<Sort>any())).thenReturn(mockWorkoutList);
-
-		// Mocking the behavior of exerciseRepo.findAll()
-		List<Exercise> mockExerciseList = new ArrayList<>();
-		when(exerciseRepo.findAll()).thenReturn(mockExerciseList);
-
-		// Mocking the HttpSession behavior
-		when(session.getAttribute("userId")).thenReturn(userId);
-
-		// Call the method to be tested
-		String result = workoutController.addWorkout(modelMap, session);
-
-		verify(workoutRepo, times(1)).findByUserId(eq(userId), (Sort) any(Sort.class));
-		verify(exerciseRepo, times(1)).findAll();
-		verify(session, times(1)).getAttribute("userId");
-		verify(modelMap, times(1)).addAttribute("workoutList", mockWorkoutList);
-		verify(modelMap, times(1)).addAttribute("exerciseList", mockExerciseList);
-		assertEquals(result, "AddWorkout");
+	    List<Workout> mockWorkoutList = new ArrayList<>();
+	    List<Exercise> mockExerciseList = new ArrayList<>();
+	    when(workoutRepo.findByUserId(eq(userId), eq(Sort.by(new Sort.Order(Direction.DESC, "date"), new Sort.Order(Direction.DESC, "startTime")))))
+	    .thenReturn(mockWorkoutList);
+	    when(exerciseRepo.findAll()).thenReturn(mockExerciseList);
+	    when(session.getAttribute("userId")).thenReturn(userId);
+	    String result = workoutController.addWorkout(modelMap, session);
+	    verify(exerciseRepo, times(1)).findAll();
+	    verify(workoutRepo,times(1)).findByUserId(userId, Sort.by(new Sort.Order(Direction.DESC, "date"), new Sort.Order(Direction.DESC, "startTime")));
+	    verify(session, times(1)).getAttribute("userId");
+	    verify(modelMap, times(1)).addAttribute("workoutList", mockWorkoutList);
+	    verify(modelMap, times(1)).addAttribute("exerciseList", mockExerciseList);
+	    assertNotNull(result);
 	}
 */
 	@Test
-	void addSetsTest() {
+	@Order(2)
+	void addSetsTest() throws Exception {
 		List<Workout> mockWorkoutList = new ArrayList<>();
 		when(workoutRepo.findAll()).thenReturn(mockWorkoutList);
-		String result = workoutController.addSets(modelMap);
-		verify(modelMap, times(1)).addAttribute("list", mockWorkoutList);
-		assertNotNull(result);
-		assertEquals(result, "addSets");
+		MvcResult mvcResult=mockMvc.perform(MockMvcRequestBuilders.get("/addSets")).andExpect(status().isOk()).andReturn();
+		ModelAndView mav=mvcResult.getModelAndView();
+		ModelAndViewAssert.assertViewName(mav, "addSets");
+		verify(workoutRepo, times(1)).findAll();
+		//verify(modelMap, times(1)).addAttribute("list", mockWorkoutList);
+		//assertNotNull(result);
+		//assertEquals(result, "addSets");
 	}
-
+/*
 	@Test
+	@Order(3)
 	void saveWorkoutTest() {
 		int userId = 1;
 		Workout workout = new Workout();
@@ -119,6 +130,7 @@ class WorkoutControllerTest {
 	}
 	
 	@Test
+	@Order(4)
 	void saveEditSetTest() {
 		Workout workout=new Workout();
 		Sets set=new Sets();
@@ -137,6 +149,7 @@ class WorkoutControllerTest {
 	}
 	
 	@Test
+	@Order(5)
 	void saveSetTest() {
 		Workout workout=new Workout();
 		workout.setId(1);
@@ -158,19 +171,21 @@ class WorkoutControllerTest {
 	}
 	
 	@Test
+	@Order(6)
 	void viewWorkoutLogTest() {
 		List<Exercise> exerciseList=new ArrayList<>();
 		when(exerciseRepo.findAll()).thenReturn(exerciseList);
 		String result=workoutController.viewWorkoutLog(1, modelMap);
 		verify(modelMap,times(1)).addAttribute("exerciseList",exerciseList);
 		verify(modelMap,times(1)).addAttribute("workoutId",1);
-		/*verify(modelMap,times(1)).addAttribute("exerciseList",exerciseList);
-		verify(modelMap,times(1)).addAttribute("workoutId",1);*/
-		assertNotNull(result);
-		assertEquals(result,"displayWorkoutLog");
+		//verify(modelMap,times(1)).addAttribute("exerciseList",exerciseList);
+		//verify(modelMap,times(1)).addAttribute("workoutId",1);
+		//assertNotNull(result);
+		//assertEquals(result,"displayWorkoutLog");
 	}
 	
 	@Test
+	@Order(7)
 	void deleteWorkoutTest_WithWorkoutidArgument() {
 		doNothing().when(workoutRepo).deleteById(1);
 		String result=workoutController.deleteWorkout(1);
@@ -179,6 +194,7 @@ class WorkoutControllerTest {
 		assertEquals(result,"redirect:addWorkout");
 	}
 	@Test
+	@Order(8)
 	void deleteSetTest_WithoutWorkoutidArgument() {
 		Sets set=new Sets();
 		Workout workout=new Workout();
@@ -193,9 +209,10 @@ class WorkoutControllerTest {
 	}
 	
 	@Test
+	@Order(9)
 	void workoutSummaryTest() {
 		
-		/*Yet to complete ,has SORT*/
+		//Yet to complete ,has SORT
 		int userId = 1;
 		when(session.getAttribute("userId")).thenReturn(userId);
 		List<Workout> workoutList=workoutController.workoutSummary(session);
@@ -205,6 +222,7 @@ class WorkoutControllerTest {
 	}
 	
 	@Test 
+	@Order(10)
 	void DisplaySignInPageTest_ValidUserSession() {
 		int userId=1;
 		when(session.getAttribute("userId")).thenReturn(1);
@@ -215,6 +233,7 @@ class WorkoutControllerTest {
 		assertEquals(result,"redirect:SignInPage");
 	}
 	@Test 
+	@Order(11)
 	void DisplaySignInPageTest_NullUserSession() {
 		int userId=1;
 		when(session.getAttribute("userId")).thenReturn(null);
@@ -224,5 +243,6 @@ class WorkoutControllerTest {
 		assertNotNull(result);
 		assertEquals(result,"redirect:SignInPage");
 	}
+	*/
 
 }

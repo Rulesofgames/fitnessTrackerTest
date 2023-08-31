@@ -15,9 +15,7 @@
 			font-family: 'Oswald', sans-serif;
 		}
 
-		body {
-		
-		}
+		body {}
 
 		#header-block {
 			position: fixed;
@@ -158,12 +156,14 @@
 			font-size: 30px;
 			font-weight: 700;
 		}
+
 		#delete-set-modal__formbox {
 			padding-top: 40px;
 		}
+
 		#close-editset-modal,
 		#close-deleteset-modal,
-		#close-exercise-modal{
+		#close-exercise-modal {
 			float: right;
 			color: #a9a5bf;
 		}
@@ -196,18 +196,16 @@
 			margin-left: 55px;
 		}
 
-		.input-field input,select {
+		.input-field input,
+		select {
 			padding-left: -30px;
 			margin-left: -10px;
 			width: 30%;
 		}
 
 		.input-field-textarea {
-
 			height: 53px;
 		}
-
-		
 
 		.buttnGrp {
 			margin: 11px auto;
@@ -258,7 +256,9 @@
 		th,
 		td {
 			border-bottom: 1px solid #dddddd;
-			padding: 10px 20px;
+			padding-top:7px;
+			padding-bottom: 7px;
+			/* To prevent overflow, word may be broken at any character for Notes column */
 			word-break: break-all;
 			text-align: center;
 			z-index: 0;
@@ -289,7 +289,7 @@
 
 		.notesColumn {}
 
-		
+
 
 		.fas {
 			font-weight: 900;
@@ -300,7 +300,7 @@
 			cursor: pointer;
 			transition: all 0.5s;
 			padding: 6px 6px;
-			display:inline-block;
+			display: inline-block;
 
 		}
 
@@ -364,14 +364,15 @@
 				<a th:href="@{displayHomePage}">Summary</a>
 				<a th:href="@{addWorkout}">Add Workout</a>
 				<a th:href="@{statistics}">Statistics</a>
-				<a>Profile</a>
+				<a th:href="@{displayProfile}">Profile</a>
 				<a th:href="@{logOut}">Log out</a>
 			</div>
 		</div>
 		<div class="add-exercise-header">
 			<p>Exercise List</p>
 			<div>
-				<button id="add-exercise-btn" th:attr="data-addexercise-toworkoutid=${workoutId}">+ Add New Exercise</button>
+				<button id="add-exercise-btn" th:attr="data-addexercise-toworkoutid=${workoutId}">+ Add New
+					Exercise</button>
 			</div>
 		</div>
 	</div>
@@ -379,21 +380,21 @@
 		<!--Edit set modal window-->
 		<div id="whole-editset-modal-window">
 			<div class="edit-set-modal">
-
 				<div class="modal-header">
 					<span id="close-editset-modal" class="closeIcon"><i
-                            class="fa-sharp fa-solid fa-xmark fa-lg"></i></span>
+							class="fa-sharp fa-solid fa-xmark fa-lg"></i></span>
 					<h2 id="">Edit Set</h2>
 				</div>
 				<div id="edit-set-modal__formbox">
 					<form action="saveEditSet" method="post">
 						<div class="input-field">
-						<label for="weight">Select Exercise:</label>
-						<select id="edit-set-exercisename" name="exerciseId" required>
-							<option th:each="exercise:${exerciseList}" th:value="${exercise.id}"
-								th:text="${exercise.exerciseName}" th:selected="${exercise.id == selectedExerciseId}">
-							</option>
-						</select>
+							<label for="Exercise">Select Exercise:</label>
+							<select id="edit-set-exercisename" name="exerciseId" required>
+								<option th:each="exercise:${exerciseList}" th:value="${exercise.id}"
+									th:text="${exercise.exerciseName}"
+									th:selected="${exercise.id == selectedExerciseId}">
+								</option>
+							</select>
 						</div>
 						<div class="input-field">
 							<label for="weight">Weight:</label>
@@ -419,7 +420,7 @@
 							<input type="number" id="edit-set-kcal" name="kcal" required>
 						</div>
 
-						<div class="input-field input-field-textarea" >
+						<div class="input-field input-field-textarea">
 							<label for="notes">Notes:</label>
 							<textarea id="edit-set-notes" name="notes" maxlength="80"></textarea>
 						</div>
@@ -441,7 +442,7 @@
 
 				<div class="modal-header">
 					<span id="close-deleteset-modal" class="closeIcon"><i
-                            class="fa-sharp fa-solid fa-xmark fa-lg"></i></span>
+							class="fa-sharp fa-solid fa-xmark fa-lg"></i></span>
 					<h2 id="">Delete Set</h2>
 				</div>
 				<div id="delete-set-modal__formbox">
@@ -466,38 +467,38 @@
 			<div class="add-exercise-modal">
 				<div class="modal-header">
 					<span id="close-exercise-modal" class="closeIcon"><i
-                            class="fa-sharp fa-solid fa-xmark fa-lg"></i></span>
+							class="fa-sharp fa-solid fa-xmark fa-lg"></i></span>
 					<h2 id="">Add Exercise</h2>
 				</div>
 				<div id="add-exercise-modal__formbox">
 					<form action="saveSet" method="post">
 						<div class="input-field">
-						<label for="weight">Select Exercise:</label>
-						<select name="exerciseId" required>
-							<option value="">Select Exercise</option>
-							<option th:each="exercise:${exerciseList}" th:value="${exercise.id}"
-								th:text="${exercise.exerciseName}"></option>
-						</select>
+							<label for="weight">Select Exercise:</label>
+							<select name="exerciseId" required>
+								<option value="">Select Exercise</option>
+								<option th:each="exercise:${exerciseList}" th:value="${exercise.id}"
+									th:text="${exercise.exerciseName}"></option>
+							</select>
 						</div>
 						<div class="input-field">
 							<label for="weight">Weight:</label>
-							<input type="number" id="add-exercise-weight" name="weight" required>
+							<input type="number" id="add-exercise-weight" name="weight" min="0" max="1000" required>
 						</div>
 						<div class="input-field">
 							<label for="reps">Reps:</label>
-							<input type="number" id="add-exercise-reps" name="reps" required>
+							<input type="number" id="add-exercise-reps" name="reps" min="0" max="1000" required>
 						</div>
 						<div class="input-field">
 							<label for="reps">Minutes:</label>
-							<input type="number" id="add-exercise-minutes" name="minutes" required>
+							<input type="number" id="add-exercise-minutes" name="minutes" min="0" max="1000" required>
 						</div>
 						<div class="input-field">
 							<label for="reps">Distance:</label>
-							<input type="number" id="add-exercise-distance" name="distance" required>
+							<input type="number" id="add-exercise-distance" name="distance" min="0" max="1000" required>
 						</div>
 						<div class="input-field">
 							<label for="reps">Kcal:</label>
-							<input type="number" id="add-exercise-Kcal" name="Kcal" required>
+							<input type="number" id="add-exercise-Kcal" name="Kcal" min="0" max="50000" required>
 						</div>
 						<div class="input-field input-field-textarea">
 							<label for="notes">Notes:</label>
@@ -515,90 +516,80 @@
 		<div class="table-section">
 			<table>
 				<thead>
-				<tr>
-					<th>Exercise</th>
-					<th>Exercise Category</th>
-					<th>SetId</th>
-					<th>Weight</th>
-					<th>Reps</th>
-					<th>Minutes</th>
-					<th>Distance</th>
-					<th>Kcal</th>
-					<th>Notes</th>
-					<th class="actionButtonClass">Action</th>
-				</tr>
+					<tr>
+						<th>SetId</th>
+						<th>Exercise</th>
+						<th>Exercise Category</th>
+						<th>Weight</th>
+						<th>Reps</th>
+						<th>Minutes</th>
+						<th>Distance</th>
+						<th>Kcal</th>
+						<th>Notes</th>
+						<th class="actionButtonClass">Action</th>
+					</tr>
 				</thead>
 				<tbody>
-				<tr th:each="set:${setsList}">
-					<td th:text="${set.exercise.exerciseName}"></td>
-					<td th:text="${set.exercise.exerciseCategory}"></td>
-					<td th:text="${set.id}"></td>
-					<td th:text="${set.weight}"></td>
-					<td th:text="${set.reps}"></td>
-					<td th:text="${set.minutes}"></td>
-					<td th:text="${set.distance}"></td>
-					<td th:text="${set.Kcal}"></td>
-					<td th:text="${set.notes}"></td>
-					<td class="action-btn-grp">
-						<div class="icon-box">
-							<div class="icon-box__hovercontent">
-								<p>Edit Set</p>
-							</div>
-							<button type="button" class="edit-set-btn" th:attr="data-set-exercise=${set.exercise.exerciseName},data-set-exerciseId=${set.exercise.id},data-set-id=${set.id},data-set-weight=${set.weight},data-set-reps=${set.reps},
+					<tr th:each="set:${setsList}">
+						<td th:text="${set.id}" ></td>
+						<td th:text="${set.exercise.exerciseName}" ></td>
+						<td th:text="${set.exercise.exerciseCategory}" ></td>
+						<td th:text="${set.weight}" ></td>
+						<td th:text="${set.reps}" ></td>
+						<td th:text="${set.minutes}" ></td>
+						<td th:text="${set.distance}" ></td>
+						<td th:text="${set.Kcal}" ></td>
+						<td th:text="${set.notes}" ></td>
+						<td class="action-btn-grp">
+							<div class="icon-box">
+								<div class="icon-box__hovercontent">
+									<p>Edit Set</p>
+								</div>
+								<!--Adding the sets infromation as attribute,the attribute values can be retrived and values can be pre- populated in "Edit Set" modal window  -->
+								<button type="button" class="edit-set-btn" th:attr="data-set-exercise=${set.exercise.exerciseName},data-set-exerciseId=${set.exercise.id},data-set-id=${set.id},data-set-weight=${set.weight},data-set-reps=${set.reps},
 			data-set-minutes=${set.minutes},data-set-distance=${set.distance},data-set-kcal=${set.Kcal},data-set-notes=${set.notes}
 			,data-set-exerciseid=${set.exercise.id},data-set-workoutid=${set.workout.id}"><i
-									class="fa-solid fa-pen-to-square"></i></button>
-
-
-						</div>
-						<div class="icon-box">
-							<div class="icon-box__hovercontent">
-								<p>Delete Set</p>
+										class="fa-solid fa-pen-to-square"></i></button>
 							</div>
-							<button type="button" class="delete-set-btn"
-								th:attr="data-set-id=${set.id},data-set-weight=${set.weight},data-set-reps=${set.reps},
+							<div class="icon-box">
+								<div class="icon-box__hovercontent">
+									<p>Delete Set</p>
+								</div>
+								<button type="button" class="delete-set-btn"
+									th:attr="data-set-id=${set.id},data-set-weight=${set.weight},data-set-reps=${set.reps},
 			data-set-minutes=${set.minutes},data-set-distance=${set.distance},data-set-kcal=${set.Kcal},data-set-notes=${set.notes},data-set-workoutid=${set.workout.id}"><i
-									class="fa-solid fa-trash"></i></button>
-						</div>
-					</td>
-				</tr>
+										class="fa-solid fa-trash"></i></button>
+							</div>
+						</td>
+					</tr>
 				</tbody>
 
 			</table>
 		</div>
-
 		<script>
 			//Add exercise
 			let exerciseModal = document.getElementById("whole-exercise-modal-window");
 			let addExerciseButton = document.getElementById("add-exercise-btn");
 			let closeExerciseModal = document.getElementById("close-exercise-modal");
-
+			//Add an event listener to the "Add New Exercise" button 
 			addExerciseButton.addEventListener("click", function () {
-				console.log("Inside click button event");
 				exerciseModal.style.display = "block";
 				let workoutId = addExerciseButton.getAttribute("data-addexercise-toworkoutid");
-				console.log("selected workout Id is" + workoutId);
 				let workoutInputId = document.getElementById("add-exercise-workoutid");
 				workoutInputId.value = Number(workoutId);
 			});
-
 			closeExerciseModal.addEventListener("click", function () {
 				exerciseModal.style.display = 'none';
 			});
-
-			//edit set
+			//Edit set
 			let editSetModal = document.getElementById("whole-editset-modal-window");
 			let editSetButtons = document.querySelectorAll(".edit-set-btn");
 			let closeEditSetModal = document.getElementById("close-editset-modal");
-
 			editSetButtons.forEach(function (button) {
-
+				//Add an event listener to the "Edit" icon of each Exercise 
 				button.addEventListener("click", function () {
-					console.log("Inside editset button event");
 					editSetModal.style.display = "block";
-
 					let exercise = button.getAttribute("data-set-exerciseId");
-					console.log("Exercise selected for edit is" + exercise);
 					let exerciseDropdown = document.getElementById("edit-set-exercisename");
 					exerciseDropdown.value = Number(exercise);
 
@@ -639,63 +630,47 @@
 					let notes = button.getAttribute("data-set-notes");
 					let setNotesInput = document.getElementById("edit-set-notes");
 					setNotesInput.value = notes;
-
 				});
-
 			});
-
 			closeEditSetModal.addEventListener("click", function () {
 				editSetModal.style.display = "none";
-
 			});
-
 			//delete set
 			let deleteSetModal = document.getElementById("whole-deleteSet-modal-window");
 			let deleteSetButtons = document.querySelectorAll(".delete-set-btn");
 			let closeDeleteSetModal = document.getElementById("close-deleteset-modal");
 			let cancelDeleteSetModal = document.getElementById("cancel-delete-set-btn");
-
 			deleteSetButtons.forEach(function (button) {
-
+				//Add an event listener to the "Delete" icon of each Exercise 
 				button.addEventListener("click", function () {
-					console.log("Inside editset button event");
 					deleteSetModal.style.display = "block";
-
 					let settId = button.getAttribute("data-set-id");
-					console.log("selected set Id is" + settId);
 					let setInputId = document.getElementById("delete-set-id");
+					//setting the input field which is hidden value to setId that has to be deleted
 					setInputId.value = Number(settId);
-
-
 					let workoutId = button.getAttribute("data-set-workoutid");
 					let setWorkoutInputId = document.getElementById("delete-set-workoutid");
 					setWorkoutInputId.value = Number(workoutId);
-
-
 				});
-
 			});
-
 			closeDeleteSetModal.addEventListener("click", function () {
 				deleteSetModal.style.display = "none";
 			});
-
 			cancelDeleteSetModal.addEventListener('click', function () {
 				deleteSetModal.style.display = "none";
 			});
+			/*Add event listener to close the "Add Exercise","Edit Set" and "Delete Set" modal windows
+		if user clicks on screen apart from the respective modal window */
 			window.addEventListener("click", function (e) {
 				if (e.target == editSetModal) {
 					editSetModal.style.display = "none";
 				} else if (e.target == deleteSetModal) {
 					deleteSetModal.style.display = "none";
+				} else if (e.target == exerciseModal) {
+					exerciseModal.style.display = "none";
 				}
-
 			});
-
-
 		</script>
-
-
 </body>
 
 </html>

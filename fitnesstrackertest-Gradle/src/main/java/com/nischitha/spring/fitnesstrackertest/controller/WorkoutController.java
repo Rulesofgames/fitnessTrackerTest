@@ -61,10 +61,12 @@ public class WorkoutController {
 		return "AddWorkout";
 	}
 
-	@RequestMapping("addSets")
+	//@RequestMapping("addSets")
+	@GetMapping("/addSets")
 	public String addSets(ModelMap modelmap) {
 		List<Workout> list = workoutRepo.findAll();
 		modelmap.addAttribute("list", list);
+		LOGGER.info("INSIDE ADD SETS");
 		return "addSets";
 	}
 

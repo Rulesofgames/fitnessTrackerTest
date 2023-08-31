@@ -153,8 +153,6 @@
 			color: #333;
 		}
 		.input-field {
-			/*have colored the whole div light grey
-            background: #eaeaea;*/
 			margin: 5px 0;
 			border-radius: 3px;
 			display: flex;
@@ -484,6 +482,7 @@
 								<div class="icon-box__hovercontent">
 									<p>Edit Workout</p>
 								</div>
+								<!--Adding the workout infromation as attribute,the attribute values can be retrived and values can be pre- populated in "Edit Workout" modal window-->
 								<button type="button" class="edit-workout-button"
 									th:attr="data-workout-id=${workout.id},data-workout-date=${workout.date},data-workout-startTime=${workout.startTime},data-workout-endTime=${workout.endTime},data-workout-bodyWeight=${workout.bodyWeight},data-workout-notes=${workout.notes}"><i
 										class="fa-solid fa-pen-to-square"></i></button>
@@ -506,17 +505,21 @@
 		let workoutModal = document.getElementById("whole-workout-modal-window");
 		let openWorkoutBtn = document.getElementById("add-workout-btn");
 		let closeWorkoutModal = document.getElementById("close-workout-modal");
+		//Add an event listener to the "Add New Workout" button 
 		openWorkoutBtn.addEventListener("click", function (event) {
+			//clicking on the "Add New Workout" button should open up the Add Workout modal window
 			workoutModal.style.display = 'block';
 		});
 		closeWorkoutModal.addEventListener("click", function () {
+			//clicking on the "x" icon in Add New Workout" modal window should close the Add Workout modal window
 			workoutModal.style.display = 'none';
 		});
+		//The toISOString() method returns the date in following format - 2023-08-31T10:05:01.874Z,the substr() returns 2023-08-31
 		let today = new Date().toISOString().substr(0, 10);
 		
 		// Set the max attribute of the date input field to today's date
 		document.getElementById("add-workout-date").setAttribute("max", today);
-		//start time should be less than end time when user tries to add new workout
+	
 		let addWorkoutStartTimeInput = document.getElementById('add-workout-startTime');
 		let addWorkoutEndTimeInput = document.getElementById('add-workout-endTime');
 		let addWorkoutTimeWarningMessage = document.getElementById("add-workout-modal__formbox__warning");
@@ -528,10 +531,10 @@
 			let [endHour, endMinute] = addWorkoutEndTimeInput.value.split(':');
 			let startTime = new Date(`1970-01-01T${startHour}:${startMinute}`);
 			let endTime = new Date(`1970-01-01T${endHour}:${endMinute}`);
-			// Compare the times
+			// Compare the times,start time should be less than end time when user tries to add new workout
 			if (startTime >= endTime) {
-				addWorkoutTimeWarningMessage.innerText = 'Start time must be less than end time';
-				event.preventDefault(); // Prevent form submission
+				addWorkoutTimeWarningMessage.innerText = 'Start time must be before end time';
+				event.preventDefault(); // Prevent form submission if start time is after end time
 				setTimeout(function () {
 					addWorkoutTimeWarningMessage.innerText = '';
 				}, 3000);
@@ -545,37 +548,42 @@
 		let closeEditWorkoutModal = document.getElementById("close-editworkout-modal");
 		let editWorkoutTimeWarningMessage = document.getElementById("edit-workout-modal__formbox__warning");
 		editWorkoutButtons.forEach(function (button) {
+			//Add an event listener to the "Edit" icon of each Workout 
 			button.addEventListener("click", function () {
-				console.log("Inside edit button event");
 				editWorkoutModal.style.display = "block";
+				
 				let workoutId = button.getAttribute("data-workout-id");
-				console.log("selected workout Id is" + workoutId);
 				let workoutInputId = document.getElementById("edit-workout-id");
 				workoutInputId.value = Number(workoutId);
 
 				let date = button.getAttribute("data-workout-date");
 				let workoutDateInput = document.getElementById("edit-workout-date");
+				//pre populates Date in Edit workout modal window
 				workoutDateInput.value = date;
 
 				let startTime = button.getAttribute("data-workout-startTime");
 				let workoutStartTimeInput = document.getElementById("edit-workout-startTime");
+				//pre populates Start Time in Edit workout modal window
 				workoutStartTimeInput.value = startTime;
 
 				let endTime = button.getAttribute("data-workout-endTime");
 				let workoutEndTimeInput = document.getElementById("edit-workout-endTime");
+				//pre populates End Time in Edit workout modal window
 				workoutEndTimeInput.value = endTime;
 
 				let bodyWeight = button.getAttribute("data-workout-bodyWeight");
 				let workoutBodyWeightInput = document.getElementById("edit-workout-bodyWeight");
+				//pre populates BodyWeight in Edit workout modal window
 				workoutBodyWeightInput.value = bodyWeight;
 
 				let notes = button.getAttribute("data-workout-notes");
 				let workoutNotesInput = document.getElementById("edit-workout-notes");
+				//pre populates Notes in Edit workout modal window
 				workoutNotesInput.value = notes;
 			});
 
 		});
-
+        //clicking on the "x" icon in "Edit Workout" modal window should close the Edit Workout modal window
 		closeEditWorkoutModal.addEventListener("click", function () {
 			editWorkoutModal.style.display = 'none';
 
@@ -583,22 +591,20 @@
 		 
 		// Set the max attribute of the date input field to today's date
 		document.getElementById("edit-workout-date").setAttribute("max", today);
-
-		//start time should be less than end time when you edit workout info
-		const editWorkoutStartTimeInput = document.getElementById('edit-workout-startTime');
-		const editWorkoutEndTimeInput = document.getElementById('edit-workout-endTime');
+		let editWorkoutStartTimeInput = document.getElementById('edit-workout-startTime');
+		let editWorkoutEndTimeInput = document.getElementById('edit-workout-endTime');
 
 		// Add an event listener to the form's submit button
 		document.getElementById('edit-workout-modal__formbox').addEventListener('submit', function (event) {
-			// Get the start and end time values as Date objects
-			const [startHour, startMinute] = editWorkoutStartTimeInput.value.split(':');
-			const [endHour, endMinute] = editWorkoutEndTimeInput.value.split(':');
-			const startTime = new Date(`1970-01-01T${startHour}:${startMinute}`);
-			const endTime = new Date(`1970-01-01T${endHour}:${endMinute}`);
+			// Get the start and end time values as Date objects, start time should be less than end time when you edit workout info
+			let [startHour, startMinute] = editWorkoutStartTimeInput.value.split(':');
+			let [endHour, endMinute] = editWorkoutEndTimeInput.value.split(':');
+			let startTime = new Date(`1970-01-01T${startHour}:${startMinute}`);
+			let endTime = new Date(`1970-01-01T${endHour}:${endMinute}`);
 			// Compare the times
 			if (startTime >= endTime) {
-				editWorkoutTimeWarningMessage.innerText = 'Start time must be less than end time';
-				event.preventDefault(); // Prevent form submission
+				editWorkoutTimeWarningMessage.innerText = 'Start time must be before end time';
+				event.preventDefault(); // Prevent form submission if start time is after end time
 				setTimeout(function () {
 					editWorkoutTimeWarningMessage.innerText = '';
 				}, 3000);
@@ -612,12 +618,11 @@
 		let deleteWorkoutButtons = document.querySelectorAll(".delete-workout-button");
 		let closeDeleteWorkoutModal = document.getElementById("close-deleteworkout-modal");
 		let cancelDeleteWorkout = document.getElementById("cancel-deleteworkout-btn");
+		//Add an event listener to the "Delete" icon of each Workout 
 		deleteWorkoutButtons.forEach(function (button) {
 			button.addEventListener("click", function () {
-				console.log("Inside delete workout button event");
 				deleteWorkoutModal.style.display = "block";
 				let workoutId = button.getAttribute("data-workout-id");
-				console.log("selected workout Id is" + workoutId);
 				let workoutInputId = document.getElementById("delete-workout-id");
 				workoutInputId.value = Number(workoutId);
 			});
@@ -631,15 +636,14 @@
 			deleteWorkoutModal.style.display = 'none';
 		});
 
+        /*Add event listener to close the "Add workout","Edit workout" and "Delete Workout" modal windows
+         if user clicks on screen apart from the respective modal window */
 		window.addEventListener("click", function (e) {
            if (e.target == workoutModal) {
-				console.log("Inside window event listener");
 				workoutModal.style.display = 'none';
 			} else if (e.target == editWorkoutModal) {
-				console.log("Inside window event listener");
 				editWorkoutModal.style.display = 'none';
 			} else if (e.target == deleteWorkoutModal) {
-				console.log("Inside window event listener");
 				deleteWorkoutModal.style.display = 'none';
 			}
 		});

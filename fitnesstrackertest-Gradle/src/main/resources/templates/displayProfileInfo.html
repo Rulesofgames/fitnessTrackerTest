@@ -10,6 +10,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<script>
 		$(document).ready(function () {
+			let validEmail=false;
+			let validPassword=false;
 			let emailInput = $('#email');
 			let saveButton = $('#save-btn');
 			let emailMessageBlock = $('#email-flashmessage-sub-block');
@@ -19,12 +21,28 @@
 				$.get('editProfileEmail', {email: email}, function (response) {
 					let emailExists = response.exists;
 					if (emailExists) {
+						validEmail=false;
+						//Disable the SignUp button if user enters existing email id or weak password
+						if(validEmail==false||validPassword==false){
+							saveButton.attr('disabled', true);
+						}
+						emailMessageBlock.text("Username already exists.Please choose different username");
+						/*
 						saveButton.attr('disabled', true);
 						saveButton.addClass("save-btn-disable");
 						emailMessageBlock.text("Username already exists.Please choose different username");
+						*/
 					} else {
+						validEmail=true;
+						//Enable the SignUp button if user enters new email id and string password
+						if(validEmail==true&&validPassword==true){
+							saveButton.attr('disabled', false);
+						}
+						emailMessageBlock.text("");
+						/*
 						saveButton.attr('disabled', false);
 						emailMessageBlock.text("");
+						*/
 					}
 
 				});
@@ -38,13 +56,29 @@
 					console.log(message);
 					console.log("response length is" + message.length);
 					if (message.length == 0) {
+						validPassword=true;
+						//Enable the SignUp button if user enters new email id and string password
+						if(validEmail==true&&validPassword==true){
+							saveButton.attr('disabled', false);
+						}
+						passwordMessageBlock.text("");
+						/*
 						saveButton.attr('disabled', false);
 						passwordMessageBlock.text("");
+						*/
 
 					} else {
+						validPassword=false;
+						//Disable the SignUp button if user enters existing email id or weak password
+						if(validEmail==false||validPassword==false){
+							saveButton.attr('disabled', true);
+						}
+						passwordMessageBlock.text(message);
+						/*
 						saveButton.attr('disabled', true);
 						saveButton.addClass("save-btn-disable");
 						passwordMessageBlock.text(message);
+						*/
 
 					}
 
@@ -55,10 +89,7 @@
 			});
 
 		});
-
-
 		setTimeout(function () {
-
 			let sucessMessageBlock = document.getElementById("success-flash-message");
 			sucessMessageBlock.innerText = "";
 		}, 3000);
@@ -80,7 +111,7 @@
 			top: 0;
 			left: 0;
 			right: 0;
-			height: 140px;
+			height: 130px;
 			display: flex;
 			flex-direction: column;
 			justify-content: space-around;
@@ -130,8 +161,8 @@
 			justify-content: space-between;
 			align-items: center;
 			vertical-align: middle;
-			padding: 20px;
-			height: 90px;
+			padding-left: 20px;
+			height: 80px;
 			background-color: white;
 		}
 
@@ -162,22 +193,22 @@
 
 
 		.main-block {
-			margin-top: 152px;
-
+			margin-top: 142px;
 		}
 
 		#profile-block {
 			margin: 0 auto;
+			padding-top:10px;
 			width: 50%;
 			height: 79%;
 			border: 2px solid #E0E0E0;
-			border-radius: 2px;
+			border-radius: 4px;
 		}
 
 		form {
 			text-align: center;
 			height: 100%;
-			padding: 6px 0px;
+			padding: 1x 0px;
 		}
 
 		#input-grp {
@@ -299,12 +330,12 @@
 			</div>
 		</div>
 		<div class="profile-header">
-			<p>Profile</p>
+			<p>Edit Profile</p>
 		</div>
 	</div>
 	<div class="main-block">
 		<div id="profile-block">
-			<form action="saveProfileInfo" method="post" th:object="${user}">
+			<form th:action="@{saveProfileInfo}" method="post" th:object="${user}">
 				<div id="input-grp">
 					<div class="input-field">
 						<label for="email">Email:</label>
@@ -347,8 +378,6 @@
 						<label for="country">Country:</label>
 						<input type="text" th:field="*{country}" name="country" maxlength="29" required>
 					</div>
-
-
 					<div class="gender-box">
 						<label for="gender">Gender:
 						</label>

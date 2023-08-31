@@ -8,10 +8,12 @@
 	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<title>Log In Page</title>
 	<script>
+		<!--Initially when the SignUp page loads the message-box should be empty since the user has not provided any input
+		.The div with id "message-box" displays message to user when invalid credentails are entered -->
 		setTimeout(function(){
 			let messageBox=document.getElementById("message-box");
 			messageBox.innerText="";
-		},3000);
+		},4000);
 	</script>
 	<style>
 		* {
@@ -55,7 +57,7 @@
 			border: 2px solid #fe7250;
 		}
 		#input-field {
-			/*have colored the whole div light grey*/
+			/*have colored the whole div[input-field box] light grey*/
 			background: #eaeaea;
 			margin: 18px 0;
 			border-radius: 3px;
@@ -141,7 +143,7 @@
 		<div id="form-box">
 			<h1 id="title">Sign In</h1>
 			<span id="underline-box"></span>
-			<form action="checklogIn" method="post">
+			<form th:action="@{checklogIn}" method="post">
 				<div id="inputGrp">
 					<div id="input-field">
 						<i class="fa-solid fa-envelope"></i>
@@ -154,6 +156,8 @@
 					<p id="forget-password">Forgot Password? <a href="#">Click Here!</a>
 					</p>
 				</div>
+				<!-- If the user inputs invalid credentials,the approriate message will be added to "msg"" attribute 
+				        and displayed to user on clicking Sign In Button " -->
 				<div id="message-box" th:text="${msg}"></div>
 				<div id="buttonGrp">
 					<input type="submit" value="Sign In" id="signin-btn">

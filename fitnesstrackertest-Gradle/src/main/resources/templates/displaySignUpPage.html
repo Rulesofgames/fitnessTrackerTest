@@ -8,26 +8,49 @@
 	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<title>Sign Up Page</title>
 	<script>
+		
 		$(document).ready(function () {
+			let validEmail=false;
+			let validPassword=false;
 			let emailInput = $('#email');
 			let signupButton = $('#signup-btn');
 			let emailMessageBlock = $('#email-flash-message-sub-block');
 			let passwordMessageBlock = $('#password-flash-message-sub-block');
+			//Below is jQuery AJAX call to check if email is already registered
 			emailInput.on('input', function () {
 				let email = emailInput.val();
 				$.get('checkEmail', {email: email}, function (response) {
 					let emailExists = response.exists;
 					if (emailExists) {
-						signupButton.attr('disabled', true);
-						signupButton.addClass("signup-btn-disableCSS");
+						validEmail=false;
+						//Disable the SignUp button if user enters existing email id or weak password
+						if(validEmail==false||validPassword==false){
+							signupButton.attr('disabled', true);
+						}
 						emailMessageBlock.text("Username already exists.Please choose different username");
+						/*
+						signupButton.addClass("signup-btn-disableCSS");
+						signupButton.attr('disabled', true);
+						*/
+						
 					} else {
-						signupButton.attr('disabled', false);
+						validEmail=true;
+						//Enable the SignUp button if user enters new email id and string password
+						if(validEmail==true&&validPassword==true){
+							signupButton.attr('disabled', false);
+						}
 						emailMessageBlock.text("");
+						/*
+						signupButton.attr('disabled', false);
+						*/
+						
+						
 					}
 				});
 			});
-
+			/* Below is jQuery AJAX call to check if user has entered strong password
+			   Strong password criteria:Password should be atleast 8 characters,including 1 uppercase,1 lowercase,1 digit and 1 special character
+			*/
 			let passwordInput = $('#password');
 			passwordInput.on('input', function () {
 				let password = passwordInput.val();
@@ -36,15 +59,39 @@
 					console.log(message);
 					console.log("response length is" + message.length);
 					if (message.length == 0) {
-						signupButton.attr('disabled', false);
+						validPassword=true;
+						//Enable the SignUp button if user enters new email id and string password
+						if(validEmail==true&&validPassword==true){
+							signupButton.attr('disabled', false);
+						}
 						passwordMessageBlock.text("");
+						/*
+						signupButton.attr('disabled', false);
+						*/
+						
 					} else {
+						validPassword=false;
+						//Disable the SignUp button if user enters existing email id or weak password
+						if(validEmail==false||validPassword==false){
+							signupButton.attr('disabled', true);
+						}
+						passwordMessageBlock.text(message);
+						/*
 						signupButton.attr('disabled', true);
 						signupButton.addClass("signup-btn-disableCSS");
-						passwordMessageBlock.text(message);
+						*/
+						
+						
 					}
 				});
 			});
+			
+				
+				if(validEmail==false||validPassword==false){
+					signupButton.attr('disabled', true);
+				}else if(validEmail==true&&validPassword==true){
+					signupButton.attr('disabled', false);
+				}
 		});
 		setTimeout(function () {
 			let sucessMessageBlock = document.getElementById("success-message-block");
@@ -246,7 +293,7 @@
 			<span id="underline-box"></span>
 			<div id="success-message-block" th:text="${msg}"></div>
 			<div id="inputGrp">
-				<form action="registerUser" method="post">
+				<form th:action="@{registerUser}" method="post">
 					<div id="inputGrp">
 						<div class="input-field">
 							<i class="fa-solid fa-envelope"></i>
@@ -294,7 +341,7 @@
 						<div class="address-box">
 							<div class="input-field" id="pincode">
 								<i class="fa-solid fa-location-dot"></i>
-								<input type="number" placeholder="Pincode" name="pincode" min="1" required>
+								<input type="number" placeholder="Pincode" name="pincode" min="1" max="999999" required>
 							</div>
 							<div class="input-field" id="country">
 								<i class="fa-solid fa-globe"></i>

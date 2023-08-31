@@ -47,16 +47,12 @@ public class UserController {
 
 	@RequestMapping("SignUpPage")
 	public String displaySignUpPage() {
-
 		return "displaySignUpPage";
 	}
 
 	@RequestMapping("SignInPage")
 	public String displaySignInPage() {
-		System.out.println(1 + 2 + 3 + "welcome" + 4 + 5);
-
 		return "displaySignInPage";
-
 	}
 
 	@PostMapping("registerUser")
